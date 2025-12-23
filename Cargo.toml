@@ -1,0 +1,42 @@
+[package]
+name = "kata-rust"
+version = "0.1.0"
+edition = "2021"
+authors = ["Rust Tutorial"]
+description = "21天 Rust 实战教程"
+license = "MIT"
+
+[dependencies]
+# 基础依赖
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1.0", features = ["full"] }
+reqwest = { version = "0.11", features = ["json"] }
+actix-web = "4.0"
+sqlx = { version = "0.6", features = ["runtime-tokio-rustls", "sqlite"] }
+clap = { version = "4.0", features = ["derive"] }
+
+[dev-dependencies]
+# 测试依赖
+tokio-test = "0.4"
+
+[[bin]]
+name = "hello_rust"
+path = "examples/day01/hello_rust.rs"
+
+[[bin]]
+name = "variables"
+path = "examples/day02/variables.rs"
+
+[[bin]]
+name = "control_flow"
+path = "examples/day03/control_flow.rs"
+
+[profile.dev]
+opt-level = 0
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
