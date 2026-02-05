@@ -1,0 +1,8 @@
+.. Tags reference file
+
+.. |date| date:: %Y-%m-%d
+.. |time| date:: %H:%M:%S
+.. |rust| replace:: **Rust**
+.. |unsafe| replace:: ``unsafe``
+.. |async| replace:: ``async``
+.. |await| replace:: ``await``

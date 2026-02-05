@@ -1,0 +1,14 @@
+.. Links reference file
+
+.. _Rust Official: https://www.rust-lang.org/
+.. _Rust Book: https://doc.rust-lang.org/book/
+.. _Rust by Example: https://doc.rust-lang.org/rust-by-example/
+.. _Rustlings: https://github.com/rust-lang/rustlings
+.. _crates.io: https://crates.io/
+.. _docs.rs: https://docs.rs/
+.. _Rust Playground: https://play.rust-lang.org/
+.. _Rust Reference: https://doc.rust-lang.org/reference/
+.. _Rust Nomicon: https://doc.rust-lang.org/nomicon/
+.. _Async Book: https://rust-lang.github.io/async-book/
+.. _Tokio: https://tokio.rs/
+.. _Serde: https://serde.rs/

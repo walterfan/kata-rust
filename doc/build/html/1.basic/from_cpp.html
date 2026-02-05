@@ -1,0 +1,509 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1.7. C++ 程序员迁移指南 &mdash; Rust 实战开发指南 1.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=46a845cc" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=f115507d"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=1ae7504c"></script>
+      <script src="../_static/translations.js?v=beaddf03"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="next" title="1.8. Java 程序员迁移指南" href="from_java.html" />
+    <link rel="prev" title="1.6. 错误处理" href="error_handling.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Rust 实战开发指南
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">1. 1. 基础与所有权</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="overview.html">1.1. Rust 语言概览</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ownership.html">1.2. 所有权系统</a></li>
+<li class="toctree-l2"><a class="reference internal" href="borrowing.html">1.3. 借用与引用</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lifetime.html">1.4. 生命周期</a></li>
+<li class="toctree-l2"><a class="reference internal" href="traits.html">1.5. Trait 系统</a></li>
+<li class="toctree-l2"><a class="reference internal" href="error_handling.html">1.6. 错误处理</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">1.7. C++ 程序员迁移指南</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">1.7.1. 概念映射</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">1.7.2. 主要思维转变</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id3">1.7.2.1. 1. 默认不可变</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id4">1.7.2.2. 2. 赋值是移动而非复制</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id5">1.7.2.3. 3. 引用有生命周期</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#trait">1.7.2.4. 4. 没有继承，使用组合 + Trait</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#result">1.7.2.5. 5. 错误处理用 Result 而非异常</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id6">1.7.3. 常见陷阱</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id7">1.7.3.1. 陷阱 1：循环中移动</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id8">1.7.3.2. 陷阱 2：结构体部分借用</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#string-vs-str">1.7.3.3. 陷阱 3：String vs &amp;str</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vec">1.7.3.4. 陷阱 4：Vec 迭代</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id9">1.7.4. 智能指针对比</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#box-vs-unique-ptr">1.7.4.1. Box vs unique_ptr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#arc-vs-shared-ptr">1.7.4.2. Arc vs shared_ptr</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id10">1.7.5. 并发对比</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id11">1.7.5.1. 线程安全</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id12">1.7.5.2. 正确的并发</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id13">1.7.6. 快速上手建议</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="from_java.html">1.8. Java 程序员迁移指南</a></li>
+<li class="toctree-l2"><a class="reference internal" href="common_errors.html">1.9. 常见编译错误</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../2.concurrency/index.html">2. 2. 并发编程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3.performance/index.html">3. 3. 性能调优</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../4.memory/index.html">4. 4. 内存管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../5.network/index.html">5. 5. 网络编程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../6.library/index.html">6. 6. 常用库</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../7.cheatsheet/index.html">7. 7. 速查表</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">8. 参考资料</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Rust 实战开发指南</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html"><span class="section-number">1. </span>1. 基础与所有权</a></li>
+      <li class="breadcrumb-item active"><span class="section-number">1.7. </span>C++ 程序员迁移指南</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/1.basic/from_cpp.md.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="c">
+<h1><span class="section-number">1.7. </span>C++ 程序员迁移指南<a class="headerlink" href="#c" title="Link to this heading"></a></h1>
+<p>本节帮助有 C++ 背景的程序员快速理解 Rust。</p>
+<section id="id1">
+<h2><span class="section-number">1.7.1. </span>概念映射<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>C++ 概念</p></th>
+<th class="head"><p>Rust 等价物</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">unique_ptr&lt;T&gt;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Box&lt;T&gt;</span></code></p></td>
+<td><p>堆上分配，独占所有权</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">shared_ptr&lt;T&gt;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Arc&lt;T&gt;</span></code> / <code class="docutils literal notranslate"><span class="pre">Rc&lt;T&gt;</span></code></p></td>
+<td><p>引用计数（Arc 线程安全）</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">weak_ptr&lt;T&gt;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Weak&lt;T&gt;</span></code></p></td>
+<td><p>弱引用</p></td>
+</tr>
+<tr class="row-odd"><td><p>RAII</p></td>
+<td><p>所有权系统</p></td>
+<td><p>自动资源管理</p></td>
+</tr>
+<tr class="row-even"><td><p>移动语义</p></td>
+<td><p>默认移动</p></td>
+<td><p>Rust 赋值默认移动</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">const</span> <span class="pre">T&amp;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&amp;T</span></code></p></td>
+<td><p>不可变引用</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">T&amp;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&amp;mut</span> <span class="pre">T</span></code></p></td>
+<td><p>可变引用</p></td>
+</tr>
+<tr class="row-odd"><td><p>模板</p></td>
+<td><p>泛型</p></td>
+<td><p>编译时单态化</p></td>
+</tr>
+<tr class="row-even"><td><p>虚函数</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dyn</span> <span class="pre">Trait</span></code></p></td>
+<td><p>动态分发</p></td>
+</tr>
+<tr class="row-odd"><td><p>概念 (Concepts)</p></td>
+<td><p>Trait bounds</p></td>
+<td><p>约束泛型</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">std::optional</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Option&lt;T&gt;</span></code></p></td>
+<td><p>可空类型</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">std::variant</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">enum</span></code></p></td>
+<td><p>代数数据类型</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">namespace</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">mod</span></code></p></td>
+<td><p>模块系统</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">.h</span></code> + <code class="docutils literal notranslate"><span class="pre">.cpp</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">.rs</span></code></p></td>
+<td><p>无需分离声明和定义</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id2">
+<h2><span class="section-number">1.7.2. </span>主要思维转变<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<section id="id3">
+<h3><span class="section-number">1.7.2.1. </span>1. 默认不可变<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// C++: 默认可修改</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
+<span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">6</span><span class="p">;</span><span class="w">  </span><span class="c1">// OK</span>
+
+<span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
+<span class="c1">// y = 6;  // 错误</span>
+</pre></div>
+</div>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// Rust: 默认不可变</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
+<span class="c1">// x = 6;  // 错误！</span>
+
+<span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
+<span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">6</span><span class="p">;</span><span class="w">  </span><span class="c1">// OK</span>
+</pre></div>
+</div>
+</section>
+<section id="id4">
+<h3><span class="section-number">1.7.2.2. </span>2. 赋值是移动而非复制<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// C++: 赋值复制</span>
+<span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">s1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;hello&quot;</span><span class="p">;</span>
+<span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">s2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s1</span><span class="p">;</span><span class="w">  </span><span class="c1">// 复制，s1 仍有效</span>
+
+<span class="c1">// 显式移动</span>
+<span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">s3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">s1</span><span class="p">);</span><span class="w">  </span><span class="c1">// s1 现在为空但仍 &quot;有效&quot;</span>
+</pre></div>
+</div>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// Rust: 赋值移动</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">s1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">String</span><span class="p">::</span><span class="n">from</span><span class="p">(</span><span class="s">&quot;hello&quot;</span><span class="p">);</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">s2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s1</span><span class="p">;</span><span class="w">  </span><span class="c1">// 移动，s1 无效</span>
+
+<span class="c1">// 显式复制</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">s3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s2</span><span class="p">.</span><span class="n">clone</span><span class="p">();</span><span class="w">  </span><span class="c1">// s2 和 s3 都有效</span>
+</pre></div>
+</div>
+</section>
+<section id="id5">
+<h3><span class="section-number">1.7.2.3. </span>3. 引用有生命周期<a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// C++: 引用可能悬垂</span>
+<span class="kt">int</span><span class="o">&amp;</span><span class="w"> </span><span class="nf">dangerous</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">42</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="p">;</span><span class="w">  </span><span class="c1">// 悬垂引用！编译器可能只是警告</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// Rust: 编译器阻止悬垂引用</span>
+<span class="k">fn</span><span class="w"> </span><span class="nf">dangerous</span><span class="p">()</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="kp">&amp;</span><span class="kt">i32</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">42</span><span class="p">;</span>
+<span class="w">    </span><span class="o">&amp;</span><span class="n">x</span><span class="w">  </span><span class="c1">// 编译错误：cannot return reference to local variable</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="trait">
+<h3><span class="section-number">1.7.2.4. </span>4. 没有继承，使用组合 + Trait<a class="headerlink" href="#trait" title="Link to this heading"></a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// C++ 继承</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Animal</span><span class="w"> </span><span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">speak</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Dog</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">Animal</span><span class="w"> </span><span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">speak</span><span class="p">()</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Woof!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// Rust: Trait + 组合</span>
+<span class="k">trait</span><span class="w"> </span><span class="n">Speak</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">fn</span><span class="w"> </span><span class="nf">speak</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">struct</span><span class="w"> </span><span class="nc">Dog</span><span class="p">;</span>
+
+<span class="k">impl</span><span class="w"> </span><span class="n">Speak</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">Dog</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">fn</span><span class="w"> </span><span class="nf">speak</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;Woof!&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// 组合而非继承</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">Pet</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">,</span>
+<span class="w">    </span><span class="n">animal</span><span class="p">:</span><span class="w"> </span><span class="nb">Box</span><span class="o">&lt;</span><span class="k">dyn</span><span class="w"> </span><span class="n">Speak</span><span class="o">&gt;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="result">
+<h3><span class="section-number">1.7.2.5. </span>5. 错误处理用 Result 而非异常<a class="headerlink" href="#result" title="Link to this heading"></a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// C++ 异常</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">process</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">read_file</span><span class="p">(</span><span class="s">&quot;data.txt&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">exception</span><span class="o">&amp;</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">what</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// Rust Result</span>
+<span class="k">fn</span><span class="w"> </span><span class="nf">process</span><span class="p">()</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">Result</span><span class="o">&lt;</span><span class="p">(),</span><span class="w"> </span><span class="nb">Box</span><span class="o">&lt;</span><span class="k">dyn</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">error</span><span class="p">::</span><span class="n">Error</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">read_file</span><span class="p">(</span><span class="s">&quot;data.txt&quot;</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+<span class="w">    </span><span class="nb">Ok</span><span class="p">(())</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id6">
+<h2><span class="section-number">1.7.3. </span>常见陷阱<a class="headerlink" href="#id6" title="Link to this heading"></a></h2>
+<section id="id7">
+<h3><span class="section-number">1.7.3.1. </span>陷阱 1：循环中移动<a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// 错误：第二次迭代时 s 已经无效</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">String</span><span class="p">::</span><span class="n">from</span><span class="p">(</span><span class="s">&quot;hello&quot;</span><span class="p">);</span>
+<span class="k">for</span><span class="w"> </span><span class="n">_</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">0</span><span class="o">..</span><span class="mi">3</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">takes_ownership</span><span class="p">(</span><span class="n">s</span><span class="p">);</span><span class="w">  </span><span class="c1">// 编译错误</span>
+<span class="p">}</span>
+
+<span class="c1">// 正确：clone 或使用引用</span>
+<span class="k">for</span><span class="w"> </span><span class="n">_</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">0</span><span class="o">..</span><span class="mi">3</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">takes_ownership</span><span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">clone</span><span class="p">());</span><span class="w">  </span><span class="c1">// 或</span>
+<span class="w">    </span><span class="n">borrows</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="id8">
+<h3><span class="section-number">1.7.3.2. </span>陷阱 2：结构体部分借用<a class="headerlink" href="#id8" title="Link to this heading"></a></h3>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">Data</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">field1</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">,</span>
+<span class="w">    </span><span class="n">field2</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Data</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">..</span><span class="p">.</span><span class="w"> </span><span class="p">};</span>
+
+<span class="c1">// 错误理解：以为这是对整个 data 的两次可变借用</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">r1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="n">data</span><span class="p">.</span><span class="n">field1</span><span class="p">;</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">r2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="n">data</span><span class="p">.</span><span class="n">field2</span><span class="p">;</span><span class="w">  </span><span class="c1">// OK！不同字段</span>
+
+<span class="c1">// 但方法调用可能有问题</span>
+<span class="k">fn</span><span class="w"> </span><span class="nf">modify</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="bp">self</span><span class="p">.</span><span class="n">helper</span><span class="p">();</span><span class="w">  </span><span class="c1">// 错误：self 已经被借用</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="string-vs-str">
+<h3><span class="section-number">1.7.3.3. </span>陷阱 3：String vs &amp;str<a class="headerlink" href="#string-vs-str" title="Link to this heading"></a></h3>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// String: 拥有数据，可增长</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">s</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">String</span><span class="p">::</span><span class="n">from</span><span class="p">(</span><span class="s">&quot;hello&quot;</span><span class="p">);</span>
+
+<span class="c1">// &amp;str: 借用的切片，通常更高效</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">s</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="kt">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;hello&quot;</span><span class="p">;</span><span class="w">  </span><span class="c1">// 字面量</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">s</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="kt">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">string</span><span class="p">;</span><span class="w">  </span><span class="c1">// 借用 String</span>
+
+<span class="c1">// 函数参数通常用 &amp;str</span>
+<span class="k">fn</span><span class="w"> </span><span class="nf">process</span><span class="p">(</span><span class="n">s</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="kt">str</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">..</span><span class="p">.</span><span class="w"> </span><span class="p">}</span>
+<span class="n">process</span><span class="p">(</span><span class="o">&amp;</span><span class="n">string</span><span class="p">);</span><span class="w">  </span><span class="c1">// String -&gt; &amp;str 自动转换</span>
+</pre></div>
+</div>
+</section>
+<section id="vec">
+<h3><span class="section-number">1.7.3.4. </span>陷阱 4：Vec 迭代<a class="headerlink" href="#vec" title="Link to this heading"></a></h3>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="kd">let</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="fm">vec!</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">];</span>
+
+<span class="c1">// 移动迭代（v 之后无效）</span>
+<span class="k">for</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="c1">// println!(&quot;{:?}&quot;, v);  // 错误</span>
+
+<span class="c1">// 借用迭代</span>
+<span class="k">for</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="o">&amp;</span><span class="n">v</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{:?}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">);</span><span class="w">  </span><span class="c1">// OK</span>
+
+<span class="c1">// 可变借用迭代</span>
+<span class="k">for</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="o">*</span><span class="n">item</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id9">
+<h2><span class="section-number">1.7.4. </span>智能指针对比<a class="headerlink" href="#id9" title="Link to this heading"></a></h2>
+<section id="box-vs-unique-ptr">
+<h3><span class="section-number">1.7.4.1. </span>Box vs unique_ptr<a class="headerlink" href="#box-vs-unique-ptr" title="Link to this heading"></a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// C++</span>
+<span class="k">auto</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">42</span><span class="p">);</span>
+<span class="k">auto</span><span class="w"> </span><span class="n">p2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">p</span><span class="p">);</span><span class="w">  </span><span class="c1">// p 现在是 nullptr，但仍可访问（UB）</span>
+</pre></div>
+</div>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// Rust</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Box</span><span class="p">::</span><span class="n">new</span><span class="p">(</span><span class="mi">42</span><span class="p">);</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">p2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="p">;</span><span class="w">  </span><span class="c1">// p 移动后无效，编译器阻止访问</span>
+<span class="c1">// println!(&quot;{}&quot;, *p);  // 编译错误</span>
+</pre></div>
+</div>
+</section>
+<section id="arc-vs-shared-ptr">
+<h3><span class="section-number">1.7.4.2. </span>Arc vs shared_ptr<a class="headerlink" href="#arc-vs-shared-ptr" title="Link to this heading"></a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// C++</span>
+<span class="k">auto</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">42</span><span class="p">);</span>
+<span class="k">auto</span><span class="w"> </span><span class="n">p2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="p">;</span><span class="w">  </span><span class="c1">// 引用计数 +1</span>
+</pre></div>
+</div>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// Rust</span>
+<span class="k">use</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">sync</span><span class="p">::</span><span class="n">Arc</span><span class="p">;</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Arc</span><span class="p">::</span><span class="n">new</span><span class="p">(</span><span class="mi">42</span><span class="p">);</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">p2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Arc</span><span class="p">::</span><span class="n">clone</span><span class="p">(</span><span class="o">&amp;</span><span class="n">p</span><span class="p">);</span><span class="w">  </span><span class="c1">// 显式 clone 增加引用计数</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id10">
+<h2><span class="section-number">1.7.5. </span>并发对比<a class="headerlink" href="#id10" title="Link to this heading"></a></h2>
+<section id="id11">
+<h3><span class="section-number">1.7.5.1. </span>线程安全<a class="headerlink" href="#id11" title="Link to this heading"></a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// C++: 需要程序员保证正确性</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">v</span><span class="p">;</span>
+<span class="n">std</span><span class="o">::</span><span class="kr">thread</span><span class="w"> </span><span class="nf">t1</span><span class="p">([</span><span class="o">&amp;</span><span class="n">v</span><span class="p">]()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">v</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w"> </span><span class="p">});</span>
+<span class="n">std</span><span class="o">::</span><span class="kr">thread</span><span class="w"> </span><span class="nf">t2</span><span class="p">([</span><span class="o">&amp;</span><span class="n">v</span><span class="p">]()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">v</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span><span class="w"> </span><span class="p">});</span>
+<span class="c1">// 数据竞争！没有编译错误</span>
+</pre></div>
+</div>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// Rust: 类型系统强制线程安全</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="fm">vec!</span><span class="p">[];</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">t1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">thread</span><span class="p">::</span><span class="n">spawn</span><span class="p">(</span><span class="o">||</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">v</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w">  </span><span class="c1">// 编译错误：无法跨线程移动</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+</section>
+<section id="id12">
+<h3><span class="section-number">1.7.5.2. </span>正确的并发<a class="headerlink" href="#id12" title="Link to this heading"></a></h3>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">use</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">sync</span><span class="p">::{</span><span class="n">Arc</span><span class="p">,</span><span class="w"> </span><span class="n">Mutex</span><span class="p">};</span>
+
+<span class="kd">let</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Arc</span><span class="p">::</span><span class="n">new</span><span class="p">(</span><span class="n">Mutex</span><span class="p">::</span><span class="n">new</span><span class="p">(</span><span class="fm">vec!</span><span class="p">[]));</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">v1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Arc</span><span class="p">::</span><span class="n">clone</span><span class="p">(</span><span class="o">&amp;</span><span class="n">v</span><span class="p">);</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">v2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Arc</span><span class="p">::</span><span class="n">clone</span><span class="p">(</span><span class="o">&amp;</span><span class="n">v</span><span class="p">);</span>
+
+<span class="kd">let</span><span class="w"> </span><span class="n">t1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">thread</span><span class="p">::</span><span class="n">spawn</span><span class="p">(</span><span class="k">move</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">v1</span><span class="p">.</span><span class="n">lock</span><span class="p">().</span><span class="n">unwrap</span><span class="p">().</span><span class="n">push</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="p">});</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">t2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">thread</span><span class="p">::</span><span class="n">spawn</span><span class="p">(</span><span class="k">move</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">v2</span><span class="p">.</span><span class="n">lock</span><span class="p">().</span><span class="n">unwrap</span><span class="p">().</span><span class="n">push</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id13">
+<h2><span class="section-number">1.7.6. </span>快速上手建议<a class="headerlink" href="#id13" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>先忘掉继承</strong>：用 Trait 和组合思考问题</p></li>
+<li><p><strong>拥抱不可变</strong>：只在需要时加 <code class="docutils literal notranslate"><span class="pre">mut</span></code></p></li>
+<li><p><strong>相信编译器</strong>：编译错误是在帮你</p></li>
+<li><p><strong>从小项目开始</strong>：让借用检查器教你</p></li>
+<li><p><strong>使用 clippy</strong>：<code class="docutils literal notranslate"><span class="pre">cargo</span> <span class="pre">clippy</span></code> 会给出惯用写法建议</p></li>
+</ol>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="error_handling.html" class="btn btn-neutral float-left" title="1.6. 错误处理" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="from_java.html" class="btn btn-neutral float-right" title="1.8. Java 程序员迁移指南" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2024 ~ 2035, Walter Fan, Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

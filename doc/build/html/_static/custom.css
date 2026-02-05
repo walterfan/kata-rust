@@ -1,0 +1,64 @@
+/* Custom CSS for Rust 实战开发指南 */
+
+/* Rust 主题色 */
+:root {
+    --rust-orange: #f74c00;
+    --rust-dark: #2b2b2b;
+    --rust-light: #f5f5f5;
+}
+
+/* 代码块样式 */
+.highlight {
+    border-radius: 6px;
+    border-left: 4px solid var(--rust-orange);
+}
+
+/* 标题样式 */
+h1, h2, h3 {
+    color: var(--rust-dark);
+}
+
+/* 侧边栏当前项高亮 */
+.wy-menu-vertical li.current > a {
+    border-left-color: var(--rust-orange);
+}
+
+/* 链接悬停效果 */
+a:hover {
+    color: var(--rust-orange) !important;
+}
+
+/* 警告框样式 */
+.admonition.warning {
+    border-left-color: var(--rust-orange);
+}
+
+.admonition.tip {
+    border-left-color: #27ae60;
+}
+
+.admonition.note {
+    border-left-color: #3498db;
+}
+
+/* Grid 卡片样式 */
+.sd-card {
+    border-radius: 8px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.sd-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* 表格样式 */
+table.docutils {
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+/* 代码复制按钮 */
+.copybtn {
+    background-color: var(--rust-orange) !important;
+}

@@ -1,0 +1,238 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>4.3. Unsafe Rust &mdash; Rust 实战开发指南 1.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=46a845cc" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=f115507d"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=1ae7504c"></script>
+      <script src="../_static/translations.js?v=beaddf03"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="next" title="4.4. 内存布局" href="memory_layout.html" />
+    <link rel="prev" title="4.2. 内部可变性" href="interior_mutability.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Rust 实战开发指南
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../1.basic/index.html">1. 1. 基础与所有权</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2.concurrency/index.html">2. 2. 并发编程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3.performance/index.html">3. 3. 性能调优</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">4. 4. 内存管理</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="smart_pointers.html">4.1. 智能指针</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interior_mutability.html">4.2. 内部可变性</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">4.3. Unsafe Rust</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#unsafe">4.3.1. 何时使用 unsafe</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">4.3.2. 裸指针</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">4.3.3. unsafe 函数</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ffi">4.3.4. FFI（外部函数接口）</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">4.3.5. 安全的 unsafe 封装</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">4.3.6. 最佳实践</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="memory_layout.html">4.4. 内存布局</a></li>
+<li class="toctree-l2"><a class="reference internal" href="leak_detection.html">4.5. 内存泄漏检测</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../5.network/index.html">5. 5. 网络编程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../6.library/index.html">6. 6. 常用库</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../7.cheatsheet/index.html">7. 7. 速查表</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">8. 参考资料</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Rust 实战开发指南</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html"><span class="section-number">4. </span>4. 内存管理</a></li>
+      <li class="breadcrumb-item active"><span class="section-number">4.3. </span>Unsafe Rust</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/4.memory/unsafe_rust.md.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="unsafe-rust">
+<h1><span class="section-number">4.3. </span>Unsafe Rust<a class="headerlink" href="#unsafe-rust" title="Link to this heading"></a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">unsafe</span></code> 关键字允许执行编译器无法验证安全性的操作。</p>
+<section id="unsafe">
+<h2><span class="section-number">4.3.1. </span>何时使用 unsafe<a class="headerlink" href="#unsafe" title="Link to this heading"></a></h2>
+<div class="admonition important">
+<p class="admonition-title">重要</p>
+<p><strong>unsafe 能做的事情</strong>：</p>
+<ol class="arabic simple">
+<li><p>解引用裸指针</p></li>
+<li><p>调用 unsafe 函数或方法</p></li>
+<li><p>访问或修改可变静态变量</p></li>
+<li><p>实现 unsafe trait</p></li>
+<li><p>访问 union 字段</p></li>
+</ol>
+<p><strong>unsafe 不能关闭借用检查器</strong>！只是允许上述操作。</p>
+</div>
+</section>
+<section id="id1">
+<h2><span class="section-number">4.3.2. </span>裸指针<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">num</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
+
+<span class="c1">// 创建裸指针是安全的</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">r1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">num</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="o">*</span><span class="k">const</span><span class="w"> </span><span class="kt">i32</span><span class="p">;</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">r2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="n">num</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="o">*</span><span class="k">mut</span><span class="w"> </span><span class="kt">i32</span><span class="p">;</span>
+
+<span class="c1">// 解引用需要 unsafe</span>
+<span class="k">unsafe</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;r1: {}&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">r1</span><span class="p">);</span>
+<span class="w">    </span><span class="o">*</span><span class="n">r2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="id2">
+<h2><span class="section-number">4.3.3. </span>unsafe 函数<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">unsafe</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">dangerous</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 可以在这里执行不安全操作</span>
+<span class="p">}</span>
+
+<span class="k">fn</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">unsafe</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">dangerous</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="ffi">
+<h2><span class="section-number">4.3.4. </span>FFI（外部函数接口）<a class="headerlink" href="#ffi" title="Link to this heading"></a></h2>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">extern</span><span class="w"> </span><span class="s">&quot;C&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">fn</span><span class="w"> </span><span class="nf">abs</span><span class="p">(</span><span class="n">input</span><span class="p">:</span><span class="w"> </span><span class="kt">i32</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="kt">i32</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">fn</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">unsafe</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;abs(-3) = {}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">abs</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">));</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="id3">
+<h2><span class="section-number">4.3.5. </span>安全的 unsafe 封装<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">pub</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">split_at_mut</span><span class="p">(</span><span class="n">values</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">mut</span><span class="w"> </span><span class="p">[</span><span class="kt">i32</span><span class="p">],</span><span class="w"> </span><span class="n">mid</span><span class="p">:</span><span class="w"> </span><span class="kt">usize</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="p">[</span><span class="kt">i32</span><span class="p">],</span><span class="w"> </span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="p">[</span><span class="kt">i32</span><span class="p">])</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">len</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">values</span><span class="p">.</span><span class="n">len</span><span class="p">();</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">ptr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">values</span><span class="p">.</span><span class="n">as_mut_ptr</span><span class="p">();</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="fm">assert!</span><span class="p">(</span><span class="n">mid</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">len</span><span class="p">);</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="k">unsafe</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="p">(</span>
+<span class="w">            </span><span class="n">std</span><span class="p">::</span><span class="n">slice</span><span class="p">::</span><span class="n">from_raw_parts_mut</span><span class="p">(</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="n">mid</span><span class="p">),</span>
+<span class="w">            </span><span class="n">std</span><span class="p">::</span><span class="n">slice</span><span class="p">::</span><span class="n">from_raw_parts_mut</span><span class="p">(</span><span class="n">ptr</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">mid</span><span class="p">),</span><span class="w"> </span><span class="n">len</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">mid</span><span class="p">),</span>
+<span class="w">        </span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="id4">
+<h2><span class="section-number">4.3.6. </span>最佳实践<a class="headerlink" href="#id4" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>最小化 unsafe 范围</strong></p></li>
+<li><p><strong>封装 unsafe 代码提供安全接口</strong></p></li>
+<li><p><strong>充分测试和文档化 unsafe 代码</strong></p></li>
+<li><p><strong>使用 MIRI 检查 undefined behavior</strong></p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 使用 MIRI 检测 UB</span>
+rustup<span class="w"> </span>+nightly<span class="w"> </span>component<span class="w"> </span>add<span class="w"> </span>miri
+cargo<span class="w"> </span>+nightly<span class="w"> </span>miri<span class="w"> </span><span class="nb">test</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="interior_mutability.html" class="btn btn-neutral float-left" title="4.2. 内部可变性" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="memory_layout.html" class="btn btn-neutral float-right" title="4.4. 内存布局" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2024 ~ 2035, Walter Fan, Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

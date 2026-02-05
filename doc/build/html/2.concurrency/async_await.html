@@ -1,0 +1,457 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2.4. async/await 异步编程 &mdash; Rust 实战开发指南 1.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=46a845cc" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=f115507d"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=1ae7504c"></script>
+      <script src="../_static/translations.js?v=beaddf03"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="next" title="2.5. Tokio 异步运行时" href="tokio.html" />
+    <link rel="prev" title="2.3. 共享状态并发" href="shared_state.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Rust 实战开发指南
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../1.basic/index.html">1. 1. 基础与所有权</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">2. 2. 并发编程</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="threads.html">2.1. 线程基础</a></li>
+<li class="toctree-l2"><a class="reference internal" href="message_passing.html">2.2. 消息传递</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shared_state.html">2.3. 共享状态并发</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">2.4. async/await 异步编程</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">2.4.1. 什么是 async/await</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#future">2.4.2. Future 概念</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">2.4.3. 基本用法</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#runtime">2.4.4. 运行时（Runtime）</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tokio">2.4.4.1. 使用 tokio</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#async-std">2.4.4.2. 使用 async-std</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">2.4.5. 并发执行多个 Future</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#join">2.4.5.1. join! 宏</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#select">2.4.5.2. select! 宏</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#async">2.4.6. async 闭包和块</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pin-unpin">2.4.7. Pin 和 Unpin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">2.4.8. 错误处理</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">2.4.9. 常见陷阱</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id6">2.4.9.1. 陷阱 1：阻塞 async 运行时</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#await-send">2.4.9.2. 陷阱 2：跨 await 持有非 Send 类型</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#await">2.4.9.3. 陷阱 3：忘记 await</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id7">2.4.10. 与其他语言对比</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#javascript-async-await">2.4.10.1. JavaScript async/await</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rust-async-await">2.4.10.2. Rust async/await</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#go-goroutine">2.4.10.3. Go goroutine</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rust-spawn">2.4.10.4. Rust spawn</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tokio.html">2.5. Tokio 异步运行时</a></li>
+<li class="toctree-l2"><a class="reference internal" href="patterns.html">2.6. 并发模式</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../3.performance/index.html">3. 3. 性能调优</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../4.memory/index.html">4. 4. 内存管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../5.network/index.html">5. 5. 网络编程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../6.library/index.html">6. 6. 常用库</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../7.cheatsheet/index.html">7. 7. 速查表</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">8. 参考资料</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Rust 实战开发指南</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html"><span class="section-number">2. </span>2. 并发编程</a></li>
+      <li class="breadcrumb-item active"><span class="section-number">2.4. </span>async/await 异步编程</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/2.concurrency/async_await.md.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="async-await">
+<h1><span class="section-number">2.4. </span>async/await 异步编程<a class="headerlink" href="#async-await" title="Link to this heading"></a></h1>
+<p>Rust 的异步编程模型基于 <strong>Future</strong> 和 <strong>async/await</strong> 语法。</p>
+<section id="id1">
+<h2><span class="section-number">2.4.1. </span>什么是 async/await<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// async 函数返回 Future</span>
+<span class="k">async</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">fetch_data</span><span class="p">()</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">String</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// await 暂停执行，等待 Future 完成</span>
+<span class="w">    </span><span class="s">&quot;data&quot;</span><span class="p">.</span><span class="n">to_string</span><span class="p">()</span>
+<span class="p">}</span>
+
+<span class="k">async</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">process</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fetch_data</span><span class="p">().</span><span class="k">await</span><span class="p">;</span><span class="w">  </span><span class="c1">// 等待异步操作完成</span>
+<span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="future">
+<h2><span class="section-number">2.4.2. </span>Future 概念<a class="headerlink" href="#future" title="Link to this heading"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">备注</p>
+<p><strong>Future</strong> 是一个可能还没完成的计算。关键特点：</p>
+<ol class="arabic simple">
+<li><p><strong>懒惰执行</strong>：创建 Future 不会执行它</p></li>
+<li><p><strong>需要轮询（poll）</strong>：运行时负责驱动 Future 完成</p></li>
+<li><p><strong>零成本抽象</strong>：编译为状态机，无堆分配</p></li>
+</ol>
+<p>与 JavaScript Promise 的区别：</p>
+<ul class="simple">
+<li><p>Promise 创建后立即开始执行</p></li>
+<li><p>Future 需要被 poll 才会推进</p></li>
+</ul>
+</div>
+</section>
+<section id="id2">
+<h2><span class="section-number">2.4.3. </span>基本用法<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">use</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">future</span><span class="p">::</span><span class="n">Future</span><span class="p">;</span>
+
+<span class="c1">// async fn 是语法糖</span>
+<span class="k">async</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">hello</span><span class="p">()</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">String</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="s">&quot;Hello&quot;</span><span class="p">.</span><span class="n">to_string</span><span class="p">()</span>
+<span class="p">}</span>
+
+<span class="c1">// 等价于</span>
+<span class="k">fn</span><span class="w"> </span><span class="nf">hello_explicit</span><span class="p">()</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nc">impl</span><span class="w"> </span><span class="n">Future</span><span class="o">&lt;</span><span class="n">Output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">String</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">async</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="s">&quot;Hello&quot;</span><span class="p">.</span><span class="n">to_string</span><span class="p">()</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="runtime">
+<h2><span class="section-number">2.4.4. </span>运行时（Runtime）<a class="headerlink" href="#runtime" title="Link to this heading"></a></h2>
+<p>Rust 标准库没有内置异步运行时，需要使用第三方 crate：</p>
+<section id="tokio">
+<h3><span class="section-number">2.4.4.1. </span>使用 tokio<a class="headerlink" href="#tokio" title="Link to this heading"></a></h3>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[dependencies]</span>
+<span class="n">tokio</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;1&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">features</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;full&quot;</span><span class="p">]</span><span class="w"> </span><span class="p">}</span>
+</pre></div>
+</div>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="cp">#[tokio::main]</span>
+<span class="k">async</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hello</span><span class="p">().</span><span class="k">await</span><span class="p">;</span>
+<span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">async</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">hello</span><span class="p">()</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="kp">&amp;</span><span class="o">&#39;</span><span class="nb">static</span><span class="w"> </span><span class="kt">str</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="s">&quot;Hello, async world!&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="async-std">
+<h3><span class="section-number">2.4.4.2. </span>使用 async-std<a class="headerlink" href="#async-std" title="Link to this heading"></a></h3>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[dependencies]</span>
+<span class="n">async-std</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;1&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">features</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;attributes&quot;</span><span class="p">]</span><span class="w"> </span><span class="p">}</span>
+</pre></div>
+</div>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="cp">#[async_std::main]</span>
+<span class="k">async</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hello</span><span class="p">().</span><span class="k">await</span><span class="p">;</span>
+<span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id3">
+<h2><span class="section-number">2.4.5. </span>并发执行多个 Future<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
+<section id="join">
+<h3><span class="section-number">2.4.5.1. </span>join! 宏<a class="headerlink" href="#join" title="Link to this heading"></a></h3>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">use</span><span class="w"> </span><span class="n">tokio</span><span class="p">::</span><span class="n">time</span><span class="p">::{</span><span class="n">sleep</span><span class="p">,</span><span class="w"> </span><span class="n">Duration</span><span class="p">};</span>
+
+<span class="k">async</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">task1</span><span class="p">()</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="kt">u32</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">sleep</span><span class="p">(</span><span class="n">Duration</span><span class="p">::</span><span class="n">from_secs</span><span class="p">(</span><span class="mi">1</span><span class="p">)).</span><span class="k">await</span><span class="p">;</span>
+<span class="w">    </span><span class="mi">1</span>
+<span class="p">}</span>
+
+<span class="k">async</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">task2</span><span class="p">()</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="kt">u32</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">sleep</span><span class="p">(</span><span class="n">Duration</span><span class="p">::</span><span class="n">from_secs</span><span class="p">(</span><span class="mi">1</span><span class="p">)).</span><span class="k">await</span><span class="p">;</span>
+<span class="w">    </span><span class="mi">2</span>
+<span class="p">}</span>
+
+<span class="cp">#[tokio::main]</span>
+<span class="k">async</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 并发执行，总时间约 1 秒</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="p">(</span><span class="n">r1</span><span class="p">,</span><span class="w"> </span><span class="n">r2</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tokio</span><span class="p">::</span><span class="n">join</span><span class="o">!</span><span class="p">(</span><span class="n">task1</span><span class="p">(),</span><span class="w"> </span><span class="n">task2</span><span class="p">());</span>
+<span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{}, {}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">r1</span><span class="p">,</span><span class="w"> </span><span class="n">r2</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="select">
+<h3><span class="section-number">2.4.5.2. </span>select! 宏<a class="headerlink" href="#select" title="Link to this heading"></a></h3>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">use</span><span class="w"> </span><span class="n">tokio</span><span class="p">::</span><span class="n">time</span><span class="p">::{</span><span class="n">sleep</span><span class="p">,</span><span class="w"> </span><span class="n">Duration</span><span class="p">};</span>
+
+<span class="cp">#[tokio::main]</span>
+<span class="k">async</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">tokio</span><span class="p">::</span><span class="n">select</span><span class="o">!</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sleep</span><span class="p">(</span><span class="n">Duration</span><span class="p">::</span><span class="n">from_secs</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;1 second elapsed&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="n">_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sleep</span><span class="p">(</span><span class="n">Duration</span><span class="p">::</span><span class="n">from_secs</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;2 seconds elapsed&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="c1">// 只会打印 &quot;1 second elapsed&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="async">
+<h2><span class="section-number">2.4.6. </span>async 闭包和块<a class="headerlink" href="#async" title="Link to this heading"></a></h2>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// async 块</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">future</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
+<span class="w">    </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">y</span>
+<span class="p">};</span>
+
+<span class="c1">// 等待结果</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">future</span><span class="p">.</span><span class="k">await</span><span class="p">;</span>
+
+<span class="c1">// async move 块（捕获所有权）</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">String</span><span class="p">::</span><span class="n">from</span><span class="p">(</span><span class="s">&quot;hello&quot;</span><span class="p">);</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">future</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="k">move</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">s</span><span class="p">);</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</section>
+<section id="pin-unpin">
+<h2><span class="section-number">2.4.7. </span>Pin 和 Unpin<a class="headerlink" href="#pin-unpin" title="Link to this heading"></a></h2>
+<div class="admonition warning">
+<p class="admonition-title">警告</p>
+<p>这是 Rust 异步编程中最复杂的概念之一。</p>
+<p><strong>问题</strong>：async 块可能包含自引用（引用自己的局部变量）。
+如果内存移动，这些引用就会失效。</p>
+<p><strong>解决</strong>：<code class="docutils literal notranslate"><span class="pre">Pin&lt;P&gt;</span></code> 保证指针指向的数据不会被移动。</p>
+<p>大多数情况下你不需要直接处理 Pin，
+因为 <code class="docutils literal notranslate"><span class="pre">tokio::spawn</span></code>、<code class="docutils literal notranslate"><span class="pre">Box::pin</span></code> 等会为你处理。</p>
+</div>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">use</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">pin</span><span class="p">::</span><span class="n">Pin</span><span class="p">;</span>
+<span class="k">use</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">future</span><span class="p">::</span><span class="n">Future</span><span class="p">;</span>
+
+<span class="c1">// 手动 pin 一个 Future</span>
+<span class="k">fn</span><span class="w"> </span><span class="nf">spawn_pinned</span><span class="o">&lt;</span><span class="n">F</span><span class="p">:</span><span class="w"> </span><span class="nc">Future</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nb">Send</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="o">&#39;</span><span class="nb">static</span><span class="o">&gt;</span><span class="p">(</span><span class="n">f</span><span class="p">:</span><span class="w"> </span><span class="nc">F</span><span class="p">)</span><span class="w"> </span>
+<span class="k">where</span>
+<span class="w">    </span><span class="n">F</span><span class="p">::</span><span class="n">Output</span><span class="p">:</span><span class="w"> </span><span class="nb">Send</span><span class="p">,</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">pinned</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Box</span><span class="p">::</span><span class="n">pin</span><span class="p">(</span><span class="n">f</span><span class="p">);</span>
+<span class="w">    </span><span class="n">tokio</span><span class="p">::</span><span class="n">spawn</span><span class="p">(</span><span class="n">pinned</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="id4">
+<h2><span class="section-number">2.4.8. </span>错误处理<a class="headerlink" href="#id4" title="Link to this heading"></a></h2>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">use</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">io</span><span class="p">;</span>
+
+<span class="k">async</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">read_file</span><span class="p">()</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nc">io</span><span class="p">::</span><span class="nb">Result</span><span class="o">&lt;</span><span class="nb">String</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// ? 在 async 函数中正常工作</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">content</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tokio</span><span class="p">::</span><span class="n">fs</span><span class="p">::</span><span class="n">read_to_string</span><span class="p">(</span><span class="s">&quot;file.txt&quot;</span><span class="p">).</span><span class="k">await</span><span class="o">?</span><span class="p">;</span>
+<span class="w">    </span><span class="nb">Ok</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="cp">#[tokio::main]</span>
+<span class="k">async</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nc">io</span><span class="p">::</span><span class="nb">Result</span><span class="o">&lt;</span><span class="p">()</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">content</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">read_file</span><span class="p">().</span><span class="k">await</span><span class="o">?</span><span class="p">;</span>
+<span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">content</span><span class="p">);</span>
+<span class="w">    </span><span class="nb">Ok</span><span class="p">(())</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="id5">
+<h2><span class="section-number">2.4.9. </span>常见陷阱<a class="headerlink" href="#id5" title="Link to this heading"></a></h2>
+<section id="id6">
+<h3><span class="section-number">2.4.9.1. </span>陷阱 1：阻塞 async 运行时<a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// 错误：在 async 中使用阻塞操作</span>
+<span class="k">async</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">bad</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="p">::</span><span class="n">thread</span><span class="p">::</span><span class="n">sleep</span><span class="p">(</span><span class="n">Duration</span><span class="p">::</span><span class="n">from_secs</span><span class="p">(</span><span class="mi">1</span><span class="p">));</span><span class="w">  </span><span class="c1">// 阻塞整个线程！</span>
+<span class="p">}</span>
+
+<span class="c1">// 正确：使用 async 版本</span>
+<span class="k">async</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">good</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">tokio</span><span class="p">::</span><span class="n">time</span><span class="p">::</span><span class="n">sleep</span><span class="p">(</span><span class="n">Duration</span><span class="p">::</span><span class="n">from_secs</span><span class="p">(</span><span class="mi">1</span><span class="p">)).</span><span class="k">await</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="await-send">
+<h3><span class="section-number">2.4.9.2. </span>陷阱 2：跨 await 持有非 Send 类型<a class="headerlink" href="#await-send" title="Link to this heading"></a></h3>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">use</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">rc</span><span class="p">::</span><span class="n">Rc</span><span class="p">;</span>
+
+<span class="k">async</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">bad</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Rc</span><span class="p">::</span><span class="n">new</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="w">    </span><span class="n">some_async_fn</span><span class="p">().</span><span class="k">await</span><span class="p">;</span><span class="w">  </span><span class="c1">// 错误：Rc 不是 Send</span>
+<span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">rc</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 解决：限制非 Send 类型的作用域</span>
+<span class="k">async</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">good</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Rc</span><span class="p">::</span><span class="n">new</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="w">        </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">rc</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span><span class="w">  </span><span class="c1">// rc 在这里 drop</span>
+<span class="w">    </span><span class="n">some_async_fn</span><span class="p">().</span><span class="k">await</span><span class="p">;</span><span class="w">  </span><span class="c1">// OK</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="await">
+<h3><span class="section-number">2.4.9.3. </span>陷阱 3：忘记 await<a class="headerlink" href="#await" title="Link to this heading"></a></h3>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">async</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">fetch</span><span class="p">()</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">String</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s">&quot;data&quot;</span><span class="p">.</span><span class="n">to_string</span><span class="p">()</span><span class="w"> </span><span class="p">}</span>
+
+<span class="k">async</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">bad</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">future</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fetch</span><span class="p">();</span><span class="w">  </span><span class="c1">// 只是创建了 Future，没有执行！</span>
+<span class="w">    </span><span class="c1">// 没有 await，fetch 永远不会执行</span>
+<span class="p">}</span>
+
+<span class="k">async</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">good</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fetch</span><span class="p">().</span><span class="k">await</span><span class="p">;</span><span class="w">  </span><span class="c1">// 正确执行</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id7">
+<h2><span class="section-number">2.4.10. </span>与其他语言对比<a class="headerlink" href="#id7" title="Link to this heading"></a></h2>
+<section id="javascript-async-await">
+<h3><span class="section-number">2.4.10.1. </span>JavaScript async/await<a class="headerlink" href="#javascript-async-await" title="Link to this heading"></a></h3>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="c1">// JavaScript: Promise 立即开始执行</span>
+<span class="k">async</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">fetchData</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="nx">url</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="rust-async-await">
+<h3><span class="section-number">2.4.10.2. </span>Rust async/await<a class="headerlink" href="#rust-async-await" title="Link to this heading"></a></h3>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// Rust: Future 是惰性的</span>
+<span class="k">async</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">fetch_data</span><span class="p">()</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">String</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">reqwest</span><span class="p">::</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">).</span><span class="k">await</span><span class="p">.</span><span class="n">unwrap</span><span class="p">();</span>
+<span class="w">    </span><span class="n">response</span><span class="p">.</span><span class="n">text</span><span class="p">().</span><span class="k">await</span><span class="p">.</span><span class="n">unwrap</span><span class="p">()</span>
+<span class="p">}</span>
+<span class="c1">// 必须 .await 或 spawn 才会执行</span>
+</pre></div>
+</div>
+</section>
+<section id="go-goroutine">
+<h3><span class="section-number">2.4.10.3. </span>Go goroutine<a class="headerlink" href="#go-goroutine" title="Link to this heading"></a></h3>
+<div class="highlight-go notranslate"><div class="highlight"><pre><span></span><span class="c1">// Go: 隐式并发，无需 await</span>
+<span class="k">go</span><span class="w"> </span><span class="nx">fetchData</span><span class="p">()</span><span class="w">  </span><span class="c1">// 自动并发</span>
+</pre></div>
+</div>
+</section>
+<section id="rust-spawn">
+<h3><span class="section-number">2.4.10.4. </span>Rust spawn<a class="headerlink" href="#rust-spawn" title="Link to this heading"></a></h3>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// Rust: 显式并发</span>
+<span class="n">tokio</span><span class="p">::</span><span class="n">spawn</span><span class="p">(</span><span class="n">fetch_data</span><span class="p">());</span><span class="w">  </span><span class="c1">// 显式启动</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="shared_state.html" class="btn btn-neutral float-left" title="2.3. 共享状态并发" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="tokio.html" class="btn btn-neutral float-right" title="2.5. Tokio 异步运行时" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2024 ~ 2035, Walter Fan, Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

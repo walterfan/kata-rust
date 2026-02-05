@@ -1,0 +1,460 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1.9. 常见编译错误 &mdash; Rust 实战开发指南 1.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=46a845cc" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=f115507d"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=1ae7504c"></script>
+      <script src="../_static/translations.js?v=beaddf03"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="next" title="2. 2. 并发编程" href="../2.concurrency/index.html" />
+    <link rel="prev" title="1.8. Java 程序员迁移指南" href="from_java.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Rust 实战开发指南
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">1. 1. 基础与所有权</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="overview.html">1.1. Rust 语言概览</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ownership.html">1.2. 所有权系统</a></li>
+<li class="toctree-l2"><a class="reference internal" href="borrowing.html">1.3. 借用与引用</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lifetime.html">1.4. 生命周期</a></li>
+<li class="toctree-l2"><a class="reference internal" href="traits.html">1.5. Trait 系统</a></li>
+<li class="toctree-l2"><a class="reference internal" href="error_handling.html">1.6. 错误处理</a></li>
+<li class="toctree-l2"><a class="reference internal" href="from_cpp.html">1.7. C++ 程序员迁移指南</a></li>
+<li class="toctree-l2"><a class="reference internal" href="from_java.html">1.8. Java 程序员迁移指南</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">1.9. 常见编译错误</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#e0382">1.9.1. E0382: 移动后使用</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#e0499">1.9.2. E0499: 多次可变借用</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#e0502">1.9.3. E0502: 可变借用和不可变借用冲突</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#e0106">1.9.4. E0106: 缺少生命周期标注</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#e0597">1.9.5. E0597: 借用的值存活时间不够</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#e0308">1.9.6. E0308: 类型不匹配</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#e0277-trait">1.9.7. E0277: Trait 未实现</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#e0596">1.9.8. E0596: 不能可变借用不可变变量</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#e0507">1.9.9. E0507: 不能移出借用的内容</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#e0515">1.9.10. E0515: 不能返回局部变量的引用</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#e0373">1.9.11. E0373: 闭包捕获移动的值</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#e0425">1.9.12. E0425: 找不到值</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">1.9.13. 调试技巧</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id3">1.9.13.1. 1. 打印类型</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dbg">1.9.13.2. 2. 使用 dbg! 宏</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id4">1.9.13.3. 3. 编译器建议</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cargo-check">1.9.13.4. 4. 使用 cargo check</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cargo-clippy">1.9.13.5. 5. 使用 cargo clippy</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../2.concurrency/index.html">2. 2. 并发编程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3.performance/index.html">3. 3. 性能调优</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../4.memory/index.html">4. 4. 内存管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../5.network/index.html">5. 5. 网络编程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../6.library/index.html">6. 6. 常用库</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../7.cheatsheet/index.html">7. 7. 速查表</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">8. 参考资料</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Rust 实战开发指南</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html"><span class="section-number">1. </span>1. 基础与所有权</a></li>
+      <li class="breadcrumb-item active"><span class="section-number">1.9. </span>常见编译错误</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/1.basic/common_errors.md.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="id1">
+<h1><span class="section-number">1.9. </span>常见编译错误<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
+<p>本节汇总 Rust 初学者最常遇到的编译错误及其解决方法。</p>
+<section id="e0382">
+<h2><span class="section-number">1.9.1. </span>E0382: 移动后使用<a class="headerlink" href="#e0382" title="Link to this heading"></a></h2>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="kd">let</span><span class="w"> </span><span class="n">s1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">String</span><span class="p">::</span><span class="n">from</span><span class="p">(</span><span class="s">&quot;hello&quot;</span><span class="p">);</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">s2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s1</span><span class="p">;</span>
+<span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">s1</span><span class="p">);</span><span class="w">  </span><span class="c1">// error[E0382]: borrow of moved value: `s1`</span>
+</pre></div>
+</div>
+<p><strong>原因</strong>：Rust 中赋值默认是移动语义，<code class="docutils literal notranslate"><span class="pre">s1</span></code> 的所有权已转移给 <code class="docutils literal notranslate"><span class="pre">s2</span></code>。</p>
+<p><strong>解决方案</strong>：</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// 方案 1: 使用 clone</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">s1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">String</span><span class="p">::</span><span class="n">from</span><span class="p">(</span><span class="s">&quot;hello&quot;</span><span class="p">);</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">s2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s1</span><span class="p">.</span><span class="n">clone</span><span class="p">();</span>
+<span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">s1</span><span class="p">);</span>
+
+<span class="c1">// 方案 2: 使用引用</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">s1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">String</span><span class="p">::</span><span class="n">from</span><span class="p">(</span><span class="s">&quot;hello&quot;</span><span class="p">);</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">s2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">s1</span><span class="p">;</span>
+<span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">s1</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="e0499">
+<h2><span class="section-number">1.9.2. </span>E0499: 多次可变借用<a class="headerlink" href="#e0499" title="Link to this heading"></a></h2>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">String</span><span class="p">::</span><span class="n">from</span><span class="p">(</span><span class="s">&quot;hello&quot;</span><span class="p">);</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">r1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="n">s</span><span class="p">;</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">r2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="n">s</span><span class="p">;</span><span class="w">  </span><span class="c1">// error[E0499]: cannot borrow `s` as mutable more than once</span>
+<span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{}, {}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">r1</span><span class="p">,</span><span class="w"> </span><span class="n">r2</span><span class="p">);</span>
+</pre></div>
+</div>
+<p><strong>原因</strong>：同一时刻只能有一个可变引用。</p>
+<p><strong>解决方案</strong>：</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// 方案 1: 使用作用域</span>
+<span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">String</span><span class="p">::</span><span class="n">from</span><span class="p">(</span><span class="s">&quot;hello&quot;</span><span class="p">);</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">r1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="n">s</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// 使用 r1</span>
+<span class="p">}</span><span class="w">  </span><span class="c1">// r1 在这里释放</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">r2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="n">s</span><span class="p">;</span><span class="w">  </span><span class="c1">// OK</span>
+
+<span class="c1">// 方案 2: 利用 NLL（非词法生命周期）</span>
+<span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">String</span><span class="p">::</span><span class="n">from</span><span class="p">(</span><span class="s">&quot;hello&quot;</span><span class="p">);</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">r1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="n">s</span><span class="p">;</span>
+<span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">r1</span><span class="p">);</span><span class="w">  </span><span class="c1">// r1 最后一次使用</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">r2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="n">s</span><span class="p">;</span><span class="w">     </span><span class="c1">// OK，r1 已经 &quot;死亡&quot;</span>
+<span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">r2</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="e0502">
+<h2><span class="section-number">1.9.3. </span>E0502: 可变借用和不可变借用冲突<a class="headerlink" href="#e0502" title="Link to this heading"></a></h2>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="fm">vec!</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">];</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">first</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+<span class="n">v</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span><span class="w">  </span><span class="c1">// error[E0502]: cannot borrow `v` as mutable</span>
+<span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">first</span><span class="p">);</span>
+</pre></div>
+</div>
+<p><strong>原因</strong>：<code class="docutils literal notranslate"><span class="pre">v.push()</span></code> 需要可变借用，但 <code class="docutils literal notranslate"><span class="pre">first</span></code> 还持有不可变引用。</p>
+<p><strong>解决方案</strong>：</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// 方案 1: 复制值而非借用</span>
+<span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="fm">vec!</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">];</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">first</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span><span class="w">  </span><span class="c1">// 复制 i32</span>
+<span class="n">v</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span>
+<span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">first</span><span class="p">);</span>
+
+<span class="c1">// 方案 2: 重新组织代码</span>
+<span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="fm">vec!</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">];</span>
+<span class="n">v</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">first</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+<span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">first</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="e0106">
+<h2><span class="section-number">1.9.4. </span>E0106: 缺少生命周期标注<a class="headerlink" href="#e0106" title="Link to this heading"></a></h2>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">Foo</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">x</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="kt">i32</span><span class="p">,</span><span class="w">  </span><span class="c1">// error[E0106]: missing lifetime specifier</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>原因</strong>：结构体包含引用时必须标注生命周期。</p>
+<p><strong>解决方案</strong>：</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">Foo</span><span class="o">&lt;&#39;</span><span class="na">a</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">x</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="o">&#39;</span><span class="na">a</span><span class="w"> </span><span class="kt">i32</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="e0597">
+<h2><span class="section-number">1.9.5. </span>E0597: 借用的值存活时间不够<a class="headerlink" href="#e0597" title="Link to this heading"></a></h2>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="kd">let</span><span class="w"> </span><span class="n">r</span><span class="p">;</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
+<span class="w">    </span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">x</span><span class="p">;</span><span class="w">  </span><span class="c1">// error[E0597]: `x` does not live long enough</span>
+<span class="p">}</span>
+<span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">);</span>
+</pre></div>
+</div>
+<p><strong>原因</strong>：<code class="docutils literal notranslate"><span class="pre">x</span></code> 在内部作用域结束时被释放，<code class="docutils literal notranslate"><span class="pre">r</span></code> 成为悬垂引用。</p>
+<p><strong>解决方案</strong>：</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// 确保被引用的值活得够长</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">x</span><span class="p">;</span>
+<span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="e0308">
+<h2><span class="section-number">1.9.6. </span>E0308: 类型不匹配<a class="headerlink" href="#e0308" title="Link to this heading"></a></h2>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">:</span><span class="w"> </span><span class="kt">i32</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">:</span><span class="w"> </span><span class="kt">i32</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="kt">i32</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">y</span><span class="p">;</span><span class="w">  </span><span class="c1">// error[E0308]: mismatched types</span>
+<span class="w">            </span><span class="c1">// expected `i32`, found `()`</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>原因</strong>：最后一行有分号，变成了语句，返回 <code class="docutils literal notranslate"><span class="pre">()</span></code>。</p>
+<p><strong>解决方案</strong>：</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">:</span><span class="w"> </span><span class="kt">i32</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">:</span><span class="w"> </span><span class="kt">i32</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="kt">i32</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">y</span><span class="w">  </span><span class="c1">// 没有分号，作为返回值</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="e0277-trait">
+<h2><span class="section-number">1.9.7. </span>E0277: Trait 未实现<a class="headerlink" href="#e0277-trait" title="Link to this heading"></a></h2>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span><span class="w"> </span><span class="nf">print_debug</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">x</span><span class="p">:</span><span class="w"> </span><span class="nc">T</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{:?}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">);</span><span class="w">  </span><span class="c1">// error[E0277]: `T` doesn&#39;t implement `Debug`</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>原因</strong>：泛型 <code class="docutils literal notranslate"><span class="pre">T</span></code> 没有约束，不保证实现了 <code class="docutils literal notranslate"><span class="pre">Debug</span></code>。</p>
+<p><strong>解决方案</strong>：</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">use</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">fmt</span><span class="p">::</span><span class="n">Debug</span><span class="p">;</span>
+
+<span class="k">fn</span><span class="w"> </span><span class="nf">print_debug</span><span class="o">&lt;</span><span class="n">T</span><span class="p">:</span><span class="w"> </span><span class="nc">Debug</span><span class="o">&gt;</span><span class="p">(</span><span class="n">x</span><span class="p">:</span><span class="w"> </span><span class="nc">T</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{:?}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="e0596">
+<h2><span class="section-number">1.9.8. </span>E0596: 不能可变借用不可变变量<a class="headerlink" href="#e0596" title="Link to this heading"></a></h2>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="kd">let</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="n">x</span><span class="p">;</span><span class="w">  </span><span class="c1">// error[E0596]: cannot borrow `x` as mutable</span>
+</pre></div>
+</div>
+<p><strong>原因</strong>：<code class="docutils literal notranslate"><span class="pre">x</span></code> 不是 <code class="docutils literal notranslate"><span class="pre">mut</span></code>，不能创建可变引用。</p>
+<p><strong>解决方案</strong>：</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="n">x</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<section id="e0507">
+<h2><span class="section-number">1.9.9. </span>E0507: 不能移出借用的内容<a class="headerlink" href="#e0507" title="Link to this heading"></a></h2>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">MyBox</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">value</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="k">fn</span><span class="w"> </span><span class="nf">take_string</span><span class="p">(</span><span class="n">b</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">MyBox</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">String</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">b</span><span class="p">.</span><span class="n">value</span><span class="w">  </span><span class="c1">// error[E0507]: cannot move out of `b.value`</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>原因</strong>：<code class="docutils literal notranslate"><span class="pre">b</span></code> 是借用，不能移动其内部的值。</p>
+<p><strong>解决方案</strong>：</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// 方案 1: 返回引用</span>
+<span class="k">fn</span><span class="w"> </span><span class="nf">get_string</span><span class="p">(</span><span class="n">b</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">MyBox</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="kp">&amp;</span><span class="nb">String</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="o">&amp;</span><span class="n">b</span><span class="p">.</span><span class="n">value</span>
+<span class="p">}</span>
+
+<span class="c1">// 方案 2: Clone</span>
+<span class="k">fn</span><span class="w"> </span><span class="nf">take_string</span><span class="p">(</span><span class="n">b</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">MyBox</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">String</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">b</span><span class="p">.</span><span class="n">value</span><span class="p">.</span><span class="n">clone</span><span class="p">()</span>
+<span class="p">}</span>
+
+<span class="c1">// 方案 3: 获取所有权</span>
+<span class="k">fn</span><span class="w"> </span><span class="nf">take_string</span><span class="p">(</span><span class="n">b</span><span class="p">:</span><span class="w"> </span><span class="nc">MyBox</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">String</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">b</span><span class="p">.</span><span class="n">value</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="e0515">
+<h2><span class="section-number">1.9.10. </span>E0515: 不能返回局部变量的引用<a class="headerlink" href="#e0515" title="Link to this heading"></a></h2>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span><span class="w"> </span><span class="nf">create_string</span><span class="p">()</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="kp">&amp;</span><span class="kt">str</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">String</span><span class="p">::</span><span class="n">from</span><span class="p">(</span><span class="s">&quot;hello&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="o">&amp;</span><span class="n">s</span><span class="w">  </span><span class="c1">// error[E0515]: cannot return reference to local variable</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>原因</strong>：<code class="docutils literal notranslate"><span class="pre">s</span></code> 在函数结束时被释放，返回的引用将悬垂。</p>
+<p><strong>解决方案</strong>：</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// 方案 1: 返回拥有的值</span>
+<span class="k">fn</span><span class="w"> </span><span class="nf">create_string</span><span class="p">()</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">String</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nb">String</span><span class="p">::</span><span class="n">from</span><span class="p">(</span><span class="s">&quot;hello&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="c1">// 方案 2: 返回 &#39;static（字面量）</span>
+<span class="k">fn</span><span class="w"> </span><span class="nf">create_string</span><span class="p">()</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="kp">&amp;</span><span class="o">&#39;</span><span class="nb">static</span><span class="w"> </span><span class="kt">str</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="s">&quot;hello&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="e0373">
+<h2><span class="section-number">1.9.11. </span>E0373: 闭包捕获移动的值<a class="headerlink" href="#e0373" title="Link to this heading"></a></h2>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="kd">let</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">String</span><span class="p">::</span><span class="n">from</span><span class="p">(</span><span class="s">&quot;hello&quot;</span><span class="p">);</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">closure</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">s</span><span class="p">);</span>
+<span class="p">};</span>
+<span class="n">std</span><span class="p">::</span><span class="n">thread</span><span class="p">::</span><span class="n">spawn</span><span class="p">(</span><span class="n">closure</span><span class="p">);</span><span class="w">  </span><span class="c1">// error[E0373]: closure may outlive the current function</span>
+</pre></div>
+</div>
+<p><strong>原因</strong>：闭包可能在当前函数返回后运行，而 <code class="docutils literal notranslate"><span class="pre">s</span></code> 会被释放。</p>
+<p><strong>解决方案</strong>：</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="kd">let</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">String</span><span class="p">::</span><span class="n">from</span><span class="p">(</span><span class="s">&quot;hello&quot;</span><span class="p">);</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">closure</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">move</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">s</span><span class="p">);</span>
+<span class="p">};</span>
+<span class="n">std</span><span class="p">::</span><span class="n">thread</span><span class="p">::</span><span class="n">spawn</span><span class="p">(</span><span class="n">closure</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="e0425">
+<h2><span class="section-number">1.9.12. </span>E0425: 找不到值<a class="headerlink" href="#e0425" title="Link to this heading"></a></h2>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">);</span><span class="w">  </span><span class="c1">// error[E0425]: cannot find value `x` in this scope</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>原因</strong>：变量 <code class="docutils literal notranslate"><span class="pre">x</span></code> 未定义或作用域错误。</p>
+<p><strong>解决方案</strong>：</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">42</span><span class="p">;</span>
+<span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="id2">
+<h2><span class="section-number">1.9.13. </span>调试技巧<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<section id="id3">
+<h3><span class="section-number">1.9.13.1. </span>1. 打印类型<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span><span class="w"> </span><span class="nf">print_type_of</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">T</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">any</span><span class="p">::</span><span class="n">type_name</span><span class="p">::</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">());</span>
+<span class="p">}</span>
+
+<span class="kd">let</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
+<span class="n">print_type_of</span><span class="p">(</span><span class="o">&amp;</span><span class="n">x</span><span class="p">);</span><span class="w">  </span><span class="c1">// i32</span>
+</pre></div>
+</div>
+</section>
+<section id="dbg">
+<h3><span class="section-number">1.9.13.2. </span>2. 使用 dbg! 宏<a class="headerlink" href="#dbg" title="Link to this heading"></a></h3>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="kd">let</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="fm">dbg!</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span><span class="w">  </span><span class="c1">// 打印: [src/main.rs:3] x * 2 = 10</span>
+</pre></div>
+</div>
+</section>
+<section id="id4">
+<h3><span class="section-number">1.9.13.3. </span>3. 编译器建议<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<p>Rust 编译器通常会给出修复建议：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>error[E0382]: borrow of moved value: `s1`
+  --&gt; src/main.rs:4:20
+   |
+2  |     let s1 = String::from(&quot;hello&quot;);
+   |         -- move occurs because `s1` has type `String`
+3  |     let s2 = s1;
+   |              -- value moved here
+4  |     println!(&quot;{}&quot;, s1);
+   |                    ^^ value borrowed here after move
+   |
+   = note: this error originates in the macro `$crate::format_args_nl`
+help: consider cloning the value if the performance cost is acceptable
+   |
+3  |     let s2 = s1.clone();
+   |                ++++++++
+</pre></div>
+</div>
+</section>
+<section id="cargo-check">
+<h3><span class="section-number">1.9.13.4. </span>4. 使用 cargo check<a class="headerlink" href="#cargo-check" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 只检查不编译，更快</span>
+cargo<span class="w"> </span>check
+</pre></div>
+</div>
+</section>
+<section id="cargo-clippy">
+<h3><span class="section-number">1.9.13.5. </span>5. 使用 cargo clippy<a class="headerlink" href="#cargo-clippy" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 获取更多代码质量建议</span>
+cargo<span class="w"> </span>clippy
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="from_java.html" class="btn btn-neutral float-left" title="1.8. Java 程序员迁移指南" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="../2.concurrency/index.html" class="btn btn-neutral float-right" title="2. 2. 并发编程" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2024 ~ 2035, Walter Fan, Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

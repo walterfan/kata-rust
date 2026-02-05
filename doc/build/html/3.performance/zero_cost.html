@@ -1,0 +1,290 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3.1. 零成本抽象 &mdash; Rust 实战开发指南 1.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=46a845cc" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=f115507d"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=1ae7504c"></script>
+      <script src="../_static/translations.js?v=beaddf03"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="next" title="3.2. 性能分析" href="profiling.html" />
+    <link rel="prev" title="3. 3. 性能调优" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Rust 实战开发指南
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../1.basic/index.html">1. 1. 基础与所有权</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2.concurrency/index.html">2. 2. 并发编程</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">3. 3. 性能调优</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">3.1. 零成本抽象</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">3.1.1. 什么是零成本抽象</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">3.1.2. 泛型是零成本的</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">3.1.3. 迭代器是零成本的</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">3.1.4. 智能指针是零成本的</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#box">3.1.4.1. Box<T></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id6">3.1.4.2. 引用</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id7">3.1.5. 与其他语言对比</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#java">3.1.5.1. Java 泛型（有开销）</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rust">3.1.5.2. Rust 泛型（零成本）</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id8">3.1.6. 何时不是零成本</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id9">3.1.6.1. 动态分发</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id10">3.1.6.2. 智能指针的引用计数</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id11">3.1.7. 验证零成本</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="profiling.html">3.2. 性能分析</a></li>
+<li class="toctree-l2"><a class="reference internal" href="benchmark.html">3.3. 基准测试</a></li>
+<li class="toctree-l2"><a class="reference internal" href="optimization.html">3.4. 优化技巧</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cache.html">3.5. CPU 缓存优化</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../4.memory/index.html">4. 4. 内存管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../5.network/index.html">5. 5. 网络编程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../6.library/index.html">6. 6. 常用库</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../7.cheatsheet/index.html">7. 7. 速查表</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">8. 参考资料</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Rust 实战开发指南</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html"><span class="section-number">3. </span>3. 性能调优</a></li>
+      <li class="breadcrumb-item active"><span class="section-number">3.1. </span>零成本抽象</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/3.performance/zero_cost.md.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="id1">
+<h1><span class="section-number">3.1. </span>零成本抽象<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
+<p>Rust 的核心设计原则之一是 <strong>零成本抽象</strong>（Zero-Cost Abstractions）。</p>
+<section id="id2">
+<h2><span class="section-number">3.1.1. </span>什么是零成本抽象<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">备注</p>
+<p>Bjarne Stroustrup（C++ 创始人）的定义：</p>
+<blockquote>
+<div><p>What you don’t use, you don’t pay for.
+What you do use, you couldn’t hand code any better.</p>
+</div></blockquote>
+<ol class="arabic simple">
+<li><p>你不用的功能，不会产生开销</p></li>
+<li><p>你用的功能，手写也不会更快</p></li>
+</ol>
+</div>
+</section>
+<section id="id3">
+<h2><span class="section-number">3.1.2. </span>泛型是零成本的<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span><span class="w"> </span><span class="nf">max</span><span class="o">&lt;</span><span class="n">T</span><span class="p">:</span><span class="w"> </span><span class="nb">Ord</span><span class="o">&gt;</span><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="w"> </span><span class="nc">T</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">:</span><span class="w"> </span><span class="nc">T</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nc">T</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// 编译器会为每个具体类型生成专门的代码</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span><span class="w">        </span><span class="c1">// 生成 max::&lt;i32&gt;</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">max</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">);</span><span class="w">    </span><span class="c1">// 生成 max::&lt;f64&gt;</span>
+</pre></div>
+</div>
+<p>这种技术叫做 <strong>单态化</strong>（Monomorphization），与手写每个类型的函数一样快。</p>
+</section>
+<section id="id4">
+<h2><span class="section-number">3.1.3. </span>迭代器是零成本的<a class="headerlink" href="#id4" title="Link to this heading"></a></h2>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="kd">let</span><span class="w"> </span><span class="n">sum</span><span class="p">:</span><span class="w"> </span><span class="kt">u32</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="o">..</span><span class="mi">1000</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">filter</span><span class="p">(</span><span class="o">|</span><span class="n">n</span><span class="o">|</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">map</span><span class="p">(</span><span class="o">|</span><span class="n">n</span><span class="o">|</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">n</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">sum</span><span class="p">();</span>
+
+<span class="c1">// 编译后等价于手写循环</span>
+<span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">sum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="k">u32</span><span class="p">;</span>
+<span class="k">for</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">..</span><span class="mi">1000</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">sum</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">n</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>迭代器链不会创建中间集合，编译器会内联和优化整个链。</p>
+</section>
+<section id="id5">
+<h2><span class="section-number">3.1.4. </span>智能指针是零成本的<a class="headerlink" href="#id5" title="Link to this heading"></a></h2>
+<section id="box">
+<h3><span class="section-number">3.1.4.1. </span>Box<T><a class="headerlink" href="#box" title="Link to this heading"></a></h3>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="kd">let</span><span class="w"> </span><span class="n">boxed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Box</span><span class="p">::</span><span class="n">new</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+<span class="c1">// 等价于</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">raw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">unsafe</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">ptr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">alloc</span><span class="p">::</span><span class="n">alloc</span><span class="p">(</span><span class="n">Layout</span><span class="p">::</span><span class="n">new</span><span class="p">::</span><span class="o">&lt;</span><span class="kt">i32</span><span class="o">&gt;</span><span class="p">())</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="o">*</span><span class="k">mut</span><span class="w"> </span><span class="kt">i32</span><span class="p">;</span>
+<span class="w">    </span><span class="o">*</span><span class="n">ptr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
+<span class="w">    </span><span class="n">ptr</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Box&lt;T&gt;</span></code> 没有额外的运行时开销，只是堆分配的抽象。</p>
+</section>
+<section id="id6">
+<h3><span class="section-number">3.1.4.2. </span>引用<a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="kd">let</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">x</span><span class="p">;</span>
+
+<span class="c1">// 引用在运行时就是一个指针</span>
+<span class="c1">// 没有额外的开销</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id7">
+<h2><span class="section-number">3.1.5. </span>与其他语言对比<a class="headerlink" href="#id7" title="Link to this heading"></a></h2>
+<section id="java">
+<h3><span class="section-number">3.1.5.1. </span>Java 泛型（有开销）<a class="headerlink" href="#java" title="Link to this heading"></a></h3>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="c1">// Java 泛型是类型擦除，需要装箱</span>
+<span class="n">List</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span><span class="w"> </span><span class="n">list</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ArrayList</span><span class="o">&lt;&gt;</span><span class="p">();</span>
+<span class="n">list</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span><span class="w">  </span><span class="c1">// 自动装箱 int -&gt; Integer</span>
+</pre></div>
+</div>
+</section>
+<section id="rust">
+<h3><span class="section-number">3.1.5.2. </span>Rust 泛型（零成本）<a class="headerlink" href="#rust" title="Link to this heading"></a></h3>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="kd">let</span><span class="w"> </span><span class="n">vec</span><span class="p">:</span><span class="w"> </span><span class="nb">Vec</span><span class="o">&lt;</span><span class="kt">i32</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="fm">vec!</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">];</span>
+<span class="c1">// i32 直接存储，没有装箱</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id8">
+<h2><span class="section-number">3.1.6. </span>何时不是零成本<a class="headerlink" href="#id8" title="Link to this heading"></a></h2>
+<section id="id9">
+<h3><span class="section-number">3.1.6.1. </span>动态分发<a class="headerlink" href="#id9" title="Link to this heading"></a></h3>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// 静态分发（零成本）</span>
+<span class="k">fn</span><span class="w"> </span><span class="nf">process_static</span><span class="p">(</span><span class="n">item</span><span class="p">:</span><span class="w"> </span><span class="nc">impl</span><span class="w"> </span><span class="n">Display</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// 动态分发（有 vtable 查找开销）</span>
+<span class="k">fn</span><span class="w"> </span><span class="nf">process_dynamic</span><span class="p">(</span><span class="n">item</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">dyn</span><span class="w"> </span><span class="n">Display</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">item</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="id10">
+<h3><span class="section-number">3.1.6.2. </span>智能指针的引用计数<a class="headerlink" href="#id10" title="Link to this heading"></a></h3>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// Box: 无开销</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Box</span><span class="p">::</span><span class="n">new</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+
+<span class="c1">// Rc: 有引用计数开销</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Rc</span><span class="p">::</span><span class="n">new</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">rc2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Rc</span><span class="p">::</span><span class="n">clone</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rc</span><span class="p">);</span><span class="w">  </span><span class="c1">// 计数 +1</span>
+
+<span class="c1">// Arc: 有原子操作开销</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">arc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Arc</span><span class="p">::</span><span class="n">new</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id11">
+<h2><span class="section-number">3.1.7. </span>验证零成本<a class="headerlink" href="#id11" title="Link to this heading"></a></h2>
+<p>使用 <code class="docutils literal notranslate"><span class="pre">cargo-asm</span></code> 查看生成的汇编：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cargo<span class="w"> </span>install<span class="w"> </span>cargo-asm
+cargo<span class="w"> </span>asm<span class="w"> </span>my_crate::my_function
+</pre></div>
+</div>
+<p>或者使用 Compiler Explorer (<a class="reference external" href="http://godbolt.org">godbolt.org</a>) 在线查看。</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="index.html" class="btn btn-neutral float-left" title="3. 3. 性能调优" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="profiling.html" class="btn btn-neutral float-right" title="3.2. 性能分析" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2024 ~ 2035, Walter Fan, Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

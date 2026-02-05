@@ -1,0 +1,176 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>6. 6. 常用库 &mdash; Rust 实战开发指南 1.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=46a845cc" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=f115507d"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=1ae7504c"></script>
+      <script src="../_static/translations.js?v=beaddf03"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="next" title="6.1. Serde 序列化" href="serde.html" />
+    <link rel="prev" title="5.4. WebSocket" href="../5.network/websocket.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Rust 实战开发指南
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../1.basic/index.html">1. 1. 基础与所有权</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2.concurrency/index.html">2. 2. 并发编程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3.performance/index.html">3. 3. 性能调优</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../4.memory/index.html">4. 4. 内存管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../5.network/index.html">5. 5. 网络编程</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">6. 6. 常用库</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="serde.html">6.1. Serde 序列化</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tokio_ecosystem.html">6.2. Tokio 生态</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli.html">6.3. 命令行工具</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logging.html">6.4. 日志和追踪</a></li>
+<li class="toctree-l2"><a class="reference internal" href="error_handling.html">6.5. 错误处理库</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../7.cheatsheet/index.html">7. 7. 速查表</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">8. 参考资料</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Rust 实战开发指南</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">6. </span>6. 常用库</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/6.library/index.rst.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="id1">
+<h1><span class="section-number">6. </span>6. 常用库<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
+<p>Rust 生态系统丰富，有大量高质量的库（crate）可用。本章介绍最常用的库。</p>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="serde.html">6.1. Serde 序列化</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="serde.html#id1">6.1.1. 安装</a></li>
+<li class="toctree-l2"><a class="reference internal" href="serde.html#id2">6.1.2. 基本用法</a></li>
+<li class="toctree-l2"><a class="reference internal" href="serde.html#id3">6.1.3. 常用属性</a></li>
+<li class="toctree-l2"><a class="reference internal" href="serde.html#id4">6.1.4. 枚举序列化</a></li>
+<li class="toctree-l2"><a class="reference internal" href="serde.html#id5">6.1.5. 自定义序列化</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tokio_ecosystem.html">6.2. Tokio 生态</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tokio_ecosystem.html#id1">6.2.1. 核心组件</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tokio_ecosystem.html#id2">6.2.2. 相关库</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tokio_ecosystem.html#id3">6.2.3. 常用模式</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">6.3. 命令行工具</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cli.html#clap">6.3.1. clap</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli.html#indicatif">6.3.2. 进度条 indicatif</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli.html#colored">6.3.3. 彩色输出 colored</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="logging.html">6.4. 日志和追踪</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="logging.html#tracing">6.4.1. tracing（推荐）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logging.html#env-logger">6.4.2. env_logger</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logging.html#id4">6.4.3. 结构化日志</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="error_handling.html">6.5. 错误处理库</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="error_handling.html#thiserror">6.5.1. thiserror（库开发者）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="error_handling.html#anyhow">6.5.2. anyhow（应用程序）</a></li>
+<li class="toctree-l2"><a class="reference internal" href="error_handling.html#id2">6.5.3. 错误链</a></li>
+<li class="toctree-l2"><a class="reference internal" href="error_handling.html#id3">6.5.4. 何时使用哪个</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="../5.network/websocket.html" class="btn btn-neutral float-left" title="5.4. WebSocket" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="serde.html" class="btn btn-neutral float-right" title="6.1. Serde 序列化" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2024 ~ 2035, Walter Fan, Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

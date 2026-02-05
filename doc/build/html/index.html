@@ -1,0 +1,391 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rust 实战开发指南 &mdash; Rust 实战开发指南 1.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=9c3e77be" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=46a845cc" />
+      <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=f115507d"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="_static/togglebutton.js?v=1ae7504c"></script>
+      <script src="_static/translations.js?v=beaddf03"></script>
+      <script src="_static/design-tabs.js?v=f930bc37"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="next" title="1. 1. 基础与所有权" href="1.basic/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            Rust 实战开发指南
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="1.basic/index.html">1. 1. 基础与所有权</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2.concurrency/index.html">2. 2. 并发编程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3.performance/index.html">3. 3. 性能调优</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4.memory/index.html">4. 4. 内存管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5.network/index.html">5. 5. 网络编程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6.library/index.html">6. 6. 常用库</a></li>
+<li class="toctree-l1"><a class="reference internal" href="7.cheatsheet/index.html">7. 7. 速查表</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">8. 参考资料</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">Rust 实战开发指南</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Rust 实战开发指南</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="rust">
+<h1>Rust 实战开发指南<a class="headerlink" href="#rust" title="Link to this heading"></a></h1>
+<a class="reference internal image-reference" href="https://www.rust-lang.org/logos/rust-logo-512x512.png"><img alt="Rust Logo" class="align-center" src="https://www.rust-lang.org/logos/rust-logo-512x512.png" style="width: 150px;" />
+</a>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>Abstract</strong></p></td>
+<td><p>Rust 实战开发指南 - 专注于易错和易忽略的知识点</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Authors</strong></p></td>
+<td><p>Walter Fan</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Category</strong></p></td>
+<td><p>learning note</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Status</strong></p></td>
+<td><p>WIP</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Updated</strong></p></td>
+<td><p>2026-02-05</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>License</strong></p></td>
+<td><p><a href="#id11"><span class="problematic" id="id12">|CC-BY-NC-ND|</span></a></p></td>
+</tr>
+</tbody>
+</table>
+<p>欢迎阅读 <strong>Rust 实战开发指南</strong>！本文档专注于 Rust 开发中程序员 <strong>易错</strong> 和 <strong>易忽略</strong> 的知识点，
+以及 Rust 相比其他语言 <strong>特殊</strong> 的地方，尤其是 Rust 独有的 <strong>所有权系统、借用检查、生命周期</strong> 等核心特性。</p>
+<div class="admonition note">
+<p class="admonition-title">备注</p>
+<p>本指南特别面向 <strong>C++/Java 程序员</strong>，帮助你快速理解 Rust 的独特设计理念，
+避免将其他语言的思维习惯错误地带入 Rust 开发中。</p>
+</div>
+<section id="id1">
+<h2>目标读者<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>有 C++/Java/Python 等编程经验，想学习 Rust 的开发者</p></li>
+<li><p>希望理解 Rust 核心概念（所有权、借用、生命周期）的程序员</p></li>
+<li><p>想要编写高性能、内存安全代码的工程师</p></li>
+<li><p>对并发编程和系统编程感兴趣的开发者</p></li>
+</ul>
+</section>
+<section id="id2">
+<h2>文档特点<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>从 C++/Java 视角出发</strong>：对比分析，帮助快速理解 Rust 设计哲学</p></li>
+<li><p><strong>避坑指南</strong>：重点讲解编译器常见错误、易混淆的概念</p></li>
+<li><p><strong>所有权深入</strong>：彻底搞懂 Rust 最独特也最难的核心概念</p></li>
+<li><p><strong>并发优先</strong>：重点讲解 Rust 的 &quot;fearless concurrency&quot;</p></li>
+<li><p><strong>实战代码</strong>：可直接编译运行的完整示例</p></li>
+</ul>
+</section>
+<section id="id3">
+<h2>为什么学 Rust？<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 40.0%" />
+<col style="width: 40.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>对比项</p></th>
+<th class="head"><p>C++</p></th>
+<th class="head"><p>Rust</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>内存安全</p></td>
+<td><p>手动管理，易出错</p></td>
+<td><p>编译期保证，零成本抽象</p></td>
+</tr>
+<tr class="row-odd"><td><p>并发安全</p></td>
+<td><p>需要程序员保证</p></td>
+<td><p>类型系统强制保证</p></td>
+</tr>
+<tr class="row-even"><td><p>空指针</p></td>
+<td><p>需要运行时检查</p></td>
+<td><p>Option&lt;T&gt; 编译期消除</p></td>
+</tr>
+<tr class="row-odd"><td><p>数据竞争</p></td>
+<td><p>运行时可能崩溃</p></td>
+<td><p>编译期阻止</p></td>
+</tr>
+</tbody>
+</table>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="1.basic/index.html">1. 1. 基础与所有权</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="1.basic/overview.html">1.1. Rust 语言概览</a></li>
+<li class="toctree-l2"><a class="reference internal" href="1.basic/ownership.html">1.2. 所有权系统</a></li>
+<li class="toctree-l2"><a class="reference internal" href="1.basic/borrowing.html">1.3. 借用与引用</a></li>
+<li class="toctree-l2"><a class="reference internal" href="1.basic/lifetime.html">1.4. 生命周期</a></li>
+<li class="toctree-l2"><a class="reference internal" href="1.basic/traits.html">1.5. Trait 系统</a></li>
+<li class="toctree-l2"><a class="reference internal" href="1.basic/error_handling.html">1.6. 错误处理</a></li>
+<li class="toctree-l2"><a class="reference internal" href="1.basic/from_cpp.html">1.7. C++ 程序员迁移指南</a></li>
+<li class="toctree-l2"><a class="reference internal" href="1.basic/from_java.html">1.8. Java 程序员迁移指南</a></li>
+<li class="toctree-l2"><a class="reference internal" href="1.basic/common_errors.html">1.9. 常见编译错误</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="2.concurrency/index.html">2. 2. 并发编程</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="2.concurrency/threads.html">2.1. 线程基础</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2.concurrency/message_passing.html">2.2. 消息传递</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2.concurrency/shared_state.html">2.3. 共享状态并发</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2.concurrency/async_await.html">2.4. async/await 异步编程</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2.concurrency/tokio.html">2.5. Tokio 异步运行时</a></li>
+<li class="toctree-l2"><a class="reference internal" href="2.concurrency/patterns.html">2.6. 并发模式</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="3.performance/index.html">3. 3. 性能调优</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="3.performance/zero_cost.html">3.1. 零成本抽象</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.performance/profiling.html">3.2. 性能分析</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.performance/benchmark.html">3.3. 基准测试</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.performance/optimization.html">3.4. 优化技巧</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.performance/cache.html">3.5. CPU 缓存优化</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="4.memory/index.html">4. 4. 内存管理</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="4.memory/smart_pointers.html">4.1. 智能指针</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.memory/interior_mutability.html">4.2. 内部可变性</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.memory/unsafe_rust.html">4.3. Unsafe Rust</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.memory/memory_layout.html">4.4. 内存布局</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.memory/leak_detection.html">4.5. 内存泄漏检测</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="5.network/index.html">5. 5. 网络编程</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="5.network/tcp_udp.html">5.1. TCP/UDP 编程</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5.network/http_client.html">5.2. HTTP 客户端</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5.network/web_server.html">5.3. Web 服务器</a></li>
+<li class="toctree-l2"><a class="reference internal" href="5.network/websocket.html">5.4. WebSocket</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="6.library/index.html">6. 6. 常用库</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="6.library/serde.html">6.1. Serde 序列化</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6.library/tokio_ecosystem.html">6.2. Tokio 生态</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6.library/cli.html">6.3. 命令行工具</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6.library/logging.html">6.4. 日志和追踪</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6.library/error_handling.html">6.5. 错误处理库</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="7.cheatsheet/index.html">7. 7. 速查表</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="7.cheatsheet/syntax.html">7.1. 语法速查</a></li>
+<li class="toctree-l2"><a class="reference internal" href="7.cheatsheet/collections.html">7.2. 集合速查</a></li>
+<li class="toctree-l2"><a class="reference internal" href="7.cheatsheet/iterators.html">7.3. 迭代器速查</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">8. 参考资料</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="references.html#id2">8.1. 官方资源</a></li>
+<li class="toctree-l2"><a class="reference internal" href="references.html#id3">8.2. 学习资源</a></li>
+<li class="toctree-l2"><a class="reference internal" href="references.html#id4">8.3. 生态系统</a></li>
+<li class="toctree-l2"><a class="reference internal" href="references.html#id5">8.4. 工具</a></li>
+<li class="toctree-l2"><a class="reference internal" href="references.html#id6">8.5. 推荐书籍</a></li>
+<li class="toctree-l2"><a class="reference internal" href="references.html#id7">8.6. 社区</a></li>
+<li class="toctree-l2"><a class="reference internal" href="references.html#id8">8.7. 迁移指南</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="id4">
+<h2>快速导航<a class="headerlink" href="#id4" title="Link to this heading"></a></h2>
+<div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
+<div class="sd-row sd-row-cols-2 sd-row-cols-xs-2 sd-row-cols-sm-2 sd-row-cols-md-2 sd-row-cols-lg-2 sd-g-3 sd-g-xs-3 sd-g-sm-3 sd-g-md-3 sd-g-lg-3 docutils">
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm sd-card-hover docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+🦀 基础与所有权</div>
+<p class="sd-card-text">Rust 核心概念，所有权系统深入理解，借用与生命周期，从 C++/Java 迁移指南，常见编译错误解决。</p>
+</div>
+<a class="sd-stretched-link sd-hide-link-text reference internal" href="1.basic/index.html"><span class="doc">1. 基础与所有权</span></a></div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm sd-card-hover docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+⚡ 并发编程</div>
+<p class="sd-card-text">Fearless Concurrency 理念，std::thread、Channel、Mutex、Arc，async/await 与 Tokio 异步运行时。</p>
+</div>
+<a class="sd-stretched-link sd-hide-link-text reference internal" href="2.concurrency/index.html"><span class="doc">2. 并发编程</span></a></div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm sd-card-hover docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+📊 性能调优</div>
+<p class="sd-card-text">零成本抽象原理，cargo bench 基准测试，flamegraph 性能分析，编译器优化，SIMD 向量化。</p>
+</div>
+<a class="sd-stretched-link sd-hide-link-text reference internal" href="3.performance/index.html"><span class="doc">3. 性能调优</span></a></div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm sd-card-hover docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+🧠 内存管理</div>
+<p class="sd-card-text">所有权与借用深入，智能指针 Box/Rc/Arc/RefCell，unsafe Rust 使用场景，内存布局与对齐。</p>
+</div>
+<a class="sd-stretched-link sd-hide-link-text reference internal" href="4.memory/index.html"><span class="doc">4. 内存管理</span></a></div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm sd-card-hover docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+🌐 网络编程</div>
+<p class="sd-card-text">std::net 基础，Tokio 异步网络，reqwest HTTP 客户端，hyper/axum Web 框架。</p>
+</div>
+<a class="sd-stretched-link sd-hide-link-text reference internal" href="5.network/index.html"><span class="doc">5. 网络编程</span></a></div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm sd-card-hover docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+📦 常用库</div>
+<p class="sd-card-text">serde 序列化、tokio 异步运行时、clap 命令行、anyhow/thiserror 错误处理、tracing 日志。</p>
+</div>
+<a class="sd-stretched-link sd-hide-link-text reference internal" href="6.library/index.html"><span class="doc">6. 常用库</span></a></div>
+</div>
+</div>
+</div>
+</section>
+<section id="id5">
+<h2>经典资源<a class="headerlink" href="#id5" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>资源名称</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://doc.rust-lang.org/book/">The Rust Book</a></p></td>
+<td><p>官方入门书籍，必读</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://doc.rust-lang.org/rust-by-example/">Rust by Example</a></p></td>
+<td><p>通过示例学习 Rust</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://github.com/rust-lang/rustlings">Rustlings</a></p></td>
+<td><p>交互式练习题</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://crates.io/">crates.io</a></p></td>
+<td><p>Rust 包管理中心</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://docs.rs/">docs.rs</a></p></td>
+<td><p>所有 crate 的文档</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://play.rust-lang.org/">Rust Playground</a></p></td>
+<td><p>在线运行 Rust 代码</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://this-week-in-rust.org/">This Week in Rust</a></p></td>
+<td><p>每周 Rust 新闻</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading"></a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">索引</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">模块索引</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">搜索页面</span></a></p></li>
+</ul>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="1.basic/index.html" class="btn btn-neutral float-right" title="1. 1. 基础与所有权" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2024 ~ 2035, Walter Fan, Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

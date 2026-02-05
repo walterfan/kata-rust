@@ -1,0 +1,9 @@
+.. Abbreviations reference file
+
+.. |RAII| replace:: :abbr:`RAII (Resource Acquisition Is Initialization)`
+.. |FFI| replace:: :abbr:`FFI (Foreign Function Interface)`
+.. |API| replace:: :abbr:`API (Application Programming Interface)`
+.. |CLI| replace:: :abbr:`CLI (Command Line Interface)`
+.. |OOM| replace:: :abbr:`OOM (Out Of Memory)`
+.. |UB| replace:: :abbr:`UB (Undefined Behavior)`
+.. |CC-BY-NC-ND| replace:: `CC BY-NC-ND 4.0 <https://creativecommons.org/licenses/by-nc-nd/4.0/>`_

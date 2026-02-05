@@ -1,0 +1,327 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>7.2. 集合速查 &mdash; Rust 实战开发指南 1.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=46a845cc" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=f115507d"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=1ae7504c"></script>
+      <script src="../_static/translations.js?v=beaddf03"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="next" title="7.3. 迭代器速查" href="iterators.html" />
+    <link rel="prev" title="7.1. 语法速查" href="syntax.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Rust 实战开发指南
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../1.basic/index.html">1. 1. 基础与所有权</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../2.concurrency/index.html">2. 2. 并发编程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3.performance/index.html">3. 3. 性能调优</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../4.memory/index.html">4. 4. 内存管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../5.network/index.html">5. 5. 网络编程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../6.library/index.html">6. 6. 常用库</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">7. 7. 速查表</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="syntax.html">7.1. 语法速查</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">7.2. 集合速查</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#vec">7.2.1. Vec<T></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hashmap-k-v">7.2.2. HashMap&lt;K, V&gt;</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hashset">7.2.3. HashSet<T></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#string">7.2.4. String</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#vecdeque">7.2.5. VecDeque<T></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#binaryheap">7.2.6. BinaryHeap<T></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#btreemap-k-v-btreeset">7.2.7. BTreeMap&lt;K, V&gt; / BTreeSet<T></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="iterators.html">7.3. 迭代器速查</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">8. 参考资料</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Rust 实战开发指南</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html"><span class="section-number">7. </span>7. 速查表</a></li>
+      <li class="breadcrumb-item active"><span class="section-number">7.2. </span>集合速查</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/7.cheatsheet/collections.md.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="id1">
+<h1><span class="section-number">7.2. </span>集合速查<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
+<section id="vec">
+<h2><span class="section-number">7.2.1. </span>Vec<T><a class="headerlink" href="#vec" title="Link to this heading"></a></h2>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// 创建</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">v</span><span class="p">:</span><span class="w"> </span><span class="nb">Vec</span><span class="o">&lt;</span><span class="kt">i32</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Vec</span><span class="p">::</span><span class="n">new</span><span class="p">();</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="fm">vec!</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">];</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Vec</span><span class="p">::</span><span class="n">with_capacity</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+
+<span class="c1">// 添加</span>
+<span class="n">v</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span>
+<span class="n">v</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span><span class="w">  </span><span class="c1">// 在索引 0 插入</span>
+<span class="n">v</span><span class="p">.</span><span class="n">extend</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">]);</span>
+
+<span class="c1">// 移除</span>
+<span class="n">v</span><span class="p">.</span><span class="n">pop</span><span class="p">();</span><span class="w">         </span><span class="c1">// 移除最后一个</span>
+<span class="n">v</span><span class="p">.</span><span class="n">remove</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="w">     </span><span class="c1">// 移除索引 0</span>
+<span class="n">v</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span><span class="w">       </span><span class="c1">// 清空</span>
+
+<span class="c1">// 访问</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">first</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span><span class="w">          </span><span class="c1">// panic if out of bounds</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">first</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">v</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="w">       </span><span class="c1">// Option&lt;&amp;T&gt;</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">first</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">v</span><span class="p">.</span><span class="n">first</span><span class="p">();</span><span class="w">      </span><span class="c1">// Option&lt;&amp;T&gt;</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">last</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">v</span><span class="p">.</span><span class="n">last</span><span class="p">();</span><span class="w">        </span><span class="c1">// Option&lt;&amp;T&gt;</span>
+
+<span class="c1">// 迭代</span>
+<span class="k">for</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="o">&amp;</span><span class="n">v</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
+<span class="k">for</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
+<span class="k">for</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span><span class="w">  </span><span class="c1">// 移动</span>
+
+<span class="c1">// 其他</span>
+<span class="n">v</span><span class="p">.</span><span class="n">len</span><span class="p">();</span>
+<span class="n">v</span><span class="p">.</span><span class="n">is_empty</span><span class="p">();</span>
+<span class="n">v</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="o">&amp;</span><span class="mi">3</span><span class="p">);</span>
+<span class="n">v</span><span class="p">.</span><span class="n">sort</span><span class="p">();</span>
+<span class="n">v</span><span class="p">.</span><span class="n">reverse</span><span class="p">();</span>
+<span class="n">v</span><span class="p">.</span><span class="n">dedup</span><span class="p">();</span><span class="w">  </span><span class="c1">// 去重（需要先排序）</span>
+</pre></div>
+</div>
+</section>
+<section id="hashmap-k-v">
+<h2><span class="section-number">7.2.2. </span>HashMap&lt;K, V&gt;<a class="headerlink" href="#hashmap-k-v" title="Link to this heading"></a></h2>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">use</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">collections</span><span class="p">::</span><span class="n">HashMap</span><span class="p">;</span>
+
+<span class="c1">// 创建</span>
+<span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">map</span><span class="p">:</span><span class="w"> </span><span class="nc">HashMap</span><span class="o">&lt;</span><span class="nb">String</span><span class="p">,</span><span class="w"> </span><span class="kt">i32</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HashMap</span><span class="p">::</span><span class="n">new</span><span class="p">();</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">map</span><span class="p">:</span><span class="w"> </span><span class="nc">HashMap</span><span class="o">&lt;</span><span class="n">_</span><span class="p">,</span><span class="w"> </span><span class="n">_</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="fm">vec!</span><span class="p">[(</span><span class="s">&quot;a&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;b&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)].</span><span class="n">into_iter</span><span class="p">().</span><span class="n">collect</span><span class="p">();</span>
+
+<span class="c1">// 插入</span>
+<span class="n">map</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="s">&quot;key&quot;</span><span class="p">.</span><span class="n">to_string</span><span class="p">(),</span><span class="w"> </span><span class="mi">10</span><span class="p">);</span>
+<span class="n">map</span><span class="p">.</span><span class="n">entry</span><span class="p">(</span><span class="s">&quot;key&quot;</span><span class="p">.</span><span class="n">to_string</span><span class="p">()).</span><span class="n">or_insert</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="n">map</span><span class="p">.</span><span class="n">entry</span><span class="p">(</span><span class="s">&quot;key&quot;</span><span class="p">.</span><span class="n">to_string</span><span class="p">()).</span><span class="n">or_insert_with</span><span class="p">(</span><span class="o">||</span><span class="w"> </span><span class="n">expensive_fn</span><span class="p">());</span>
+
+<span class="c1">// 获取</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">map</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;key&quot;</span><span class="p">);</span><span class="w">  </span><span class="c1">// Option&lt;&amp;V&gt;</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">map</span><span class="p">[</span><span class="s">&quot;key&quot;</span><span class="p">];</span><span class="w">      </span><span class="c1">// panic if not found</span>
+
+<span class="c1">// 移除</span>
+<span class="n">map</span><span class="p">.</span><span class="n">remove</span><span class="p">(</span><span class="s">&quot;key&quot;</span><span class="p">);</span>
+
+<span class="c1">// 迭代</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">key</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="o">&amp;</span><span class="n">map</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">key</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="n">map</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
+
+<span class="c1">// 其他</span>
+<span class="n">map</span><span class="p">.</span><span class="n">len</span><span class="p">();</span>
+<span class="n">map</span><span class="p">.</span><span class="n">is_empty</span><span class="p">();</span>
+<span class="n">map</span><span class="p">.</span><span class="n">contains_key</span><span class="p">(</span><span class="s">&quot;key&quot;</span><span class="p">);</span>
+<span class="n">map</span><span class="p">.</span><span class="n">keys</span><span class="p">();</span>
+<span class="n">map</span><span class="p">.</span><span class="n">values</span><span class="p">();</span>
+</pre></div>
+</div>
+</section>
+<section id="hashset">
+<h2><span class="section-number">7.2.3. </span>HashSet<T><a class="headerlink" href="#hashset" title="Link to this heading"></a></h2>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">use</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">collections</span><span class="p">::</span><span class="n">HashSet</span><span class="p">;</span>
+
+<span class="c1">// 创建</span>
+<span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">set</span><span class="p">:</span><span class="w"> </span><span class="nc">HashSet</span><span class="o">&lt;</span><span class="kt">i32</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HashSet</span><span class="p">::</span><span class="n">new</span><span class="p">();</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">set</span><span class="p">:</span><span class="w"> </span><span class="nc">HashSet</span><span class="o">&lt;</span><span class="n">_</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="fm">vec!</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">].</span><span class="n">into_iter</span><span class="p">().</span><span class="n">collect</span><span class="p">();</span>
+
+<span class="c1">// 操作</span>
+<span class="n">set</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span>
+<span class="n">set</span><span class="p">.</span><span class="n">remove</span><span class="p">(</span><span class="o">&amp;</span><span class="mi">4</span><span class="p">);</span>
+<span class="n">set</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="o">&amp;</span><span class="mi">3</span><span class="p">);</span>
+
+<span class="c1">// 集合运算</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">a</span><span class="p">:</span><span class="w"> </span><span class="nc">HashSet</span><span class="o">&lt;</span><span class="n">_</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">].</span><span class="n">into_iter</span><span class="p">().</span><span class="n">collect</span><span class="p">();</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">b</span><span class="p">:</span><span class="w"> </span><span class="nc">HashSet</span><span class="o">&lt;</span><span class="n">_</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">].</span><span class="n">into_iter</span><span class="p">().</span><span class="n">collect</span><span class="p">();</span>
+
+<span class="kd">let</span><span class="w"> </span><span class="k">union</span><span class="p">:</span><span class="w"> </span><span class="nc">HashSet</span><span class="o">&lt;</span><span class="n">_</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="k">union</span><span class="p">(</span><span class="o">&amp;</span><span class="n">b</span><span class="p">).</span><span class="n">collect</span><span class="p">();</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">intersection</span><span class="p">:</span><span class="w"> </span><span class="nc">HashSet</span><span class="o">&lt;</span><span class="n">_</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">intersection</span><span class="p">(</span><span class="o">&amp;</span><span class="n">b</span><span class="p">).</span><span class="n">collect</span><span class="p">();</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">difference</span><span class="p">:</span><span class="w"> </span><span class="nc">HashSet</span><span class="o">&lt;</span><span class="n">_</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">difference</span><span class="p">(</span><span class="o">&amp;</span><span class="n">b</span><span class="p">).</span><span class="n">collect</span><span class="p">();</span>
+</pre></div>
+</div>
+</section>
+<section id="string">
+<h2><span class="section-number">7.2.4. </span>String<a class="headerlink" href="#string" title="Link to this heading"></a></h2>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// 创建</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">String</span><span class="p">::</span><span class="n">new</span><span class="p">();</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">String</span><span class="p">::</span><span class="n">from</span><span class="p">(</span><span class="s">&quot;hello&quot;</span><span class="p">);</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;hello&quot;</span><span class="p">.</span><span class="n">to_string</span><span class="p">();</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="fm">format!</span><span class="p">(</span><span class="s">&quot;Hello, {}!&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">);</span>
+
+<span class="c1">// 追加</span>
+<span class="n">s</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="sc">&#39;!&#39;</span><span class="p">);</span>
+<span class="n">s</span><span class="p">.</span><span class="n">push_str</span><span class="p">(</span><span class="s">&quot; world&quot;</span><span class="p">);</span>
+<span class="n">s</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="s">&quot; more&quot;</span><span class="p">;</span>
+
+<span class="c1">// 拼接</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="o">&amp;</span><span class="n">s2</span><span class="p">;</span><span class="w">  </span><span class="c1">// s1 被移动</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="fm">format!</span><span class="p">(</span><span class="s">&quot;{}{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">s1</span><span class="p">,</span><span class="w"> </span><span class="n">s2</span><span class="p">);</span><span class="w">  </span><span class="c1">// 不移动</span>
+
+<span class="c1">// 切片</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">slice</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="o">..</span><span class="mi">5</span><span class="p">];</span><span class="w">  </span><span class="c1">// 注意：UTF-8 字节边界</span>
+
+<span class="c1">// 遍历</span>
+<span class="k">for</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">chars</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
+<span class="k">for</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">bytes</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
+
+<span class="c1">// 其他</span>
+<span class="n">s</span><span class="p">.</span><span class="n">len</span><span class="p">();</span><span class="w">  </span><span class="c1">// 字节数</span>
+<span class="n">s</span><span class="p">.</span><span class="n">chars</span><span class="p">().</span><span class="n">count</span><span class="p">();</span><span class="w">  </span><span class="c1">// 字符数</span>
+<span class="n">s</span><span class="p">.</span><span class="n">is_empty</span><span class="p">();</span>
+<span class="n">s</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">&quot;hello&quot;</span><span class="p">);</span>
+<span class="n">s</span><span class="p">.</span><span class="n">starts_with</span><span class="p">(</span><span class="s">&quot;he&quot;</span><span class="p">);</span>
+<span class="n">s</span><span class="p">.</span><span class="n">ends_with</span><span class="p">(</span><span class="s">&quot;lo&quot;</span><span class="p">);</span>
+<span class="n">s</span><span class="p">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot;old&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;new&quot;</span><span class="p">);</span>
+<span class="n">s</span><span class="p">.</span><span class="n">trim</span><span class="p">();</span>
+<span class="n">s</span><span class="p">.</span><span class="n">split</span><span class="p">(</span><span class="sc">&#39;,&#39;</span><span class="p">);</span>
+<span class="n">s</span><span class="p">.</span><span class="n">lines</span><span class="p">();</span>
+</pre></div>
+</div>
+</section>
+<section id="vecdeque">
+<h2><span class="section-number">7.2.5. </span>VecDeque<T><a class="headerlink" href="#vecdeque" title="Link to this heading"></a></h2>
+<p>双端队列：</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">use</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">collections</span><span class="p">::</span><span class="n">VecDeque</span><span class="p">;</span>
+
+<span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">deque</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">VecDeque</span><span class="p">::</span><span class="n">new</span><span class="p">();</span>
+<span class="n">deque</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="n">deque</span><span class="p">.</span><span class="n">push_front</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="n">deque</span><span class="p">.</span><span class="n">pop_back</span><span class="p">();</span>
+<span class="n">deque</span><span class="p">.</span><span class="n">pop_front</span><span class="p">();</span>
+</pre></div>
+</div>
+</section>
+<section id="binaryheap">
+<h2><span class="section-number">7.2.6. </span>BinaryHeap<T><a class="headerlink" href="#binaryheap" title="Link to this heading"></a></h2>
+<p>最大堆：</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">use</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">collections</span><span class="p">::</span><span class="n">BinaryHeap</span><span class="p">;</span>
+
+<span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">heap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BinaryHeap</span><span class="p">::</span><span class="n">new</span><span class="p">();</span>
+<span class="n">heap</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="n">heap</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+<span class="n">heap</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+
+<span class="fm">assert_eq!</span><span class="p">(</span><span class="n">heap</span><span class="p">.</span><span class="n">pop</span><span class="p">(),</span><span class="w"> </span><span class="nb">Some</span><span class="p">(</span><span class="mi">5</span><span class="p">));</span>
+<span class="fm">assert_eq!</span><span class="p">(</span><span class="n">heap</span><span class="p">.</span><span class="n">peek</span><span class="p">(),</span><span class="w"> </span><span class="nb">Some</span><span class="p">(</span><span class="o">&amp;</span><span class="mi">2</span><span class="p">));</span>
+</pre></div>
+</div>
+</section>
+<section id="btreemap-k-v-btreeset">
+<h2><span class="section-number">7.2.7. </span>BTreeMap&lt;K, V&gt; / BTreeSet<T><a class="headerlink" href="#btreemap-k-v-btreeset" title="Link to this heading"></a></h2>
+<p>有序集合（基于 B 树）：</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">use</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">collections</span><span class="p">::{</span><span class="n">BTreeMap</span><span class="p">,</span><span class="w"> </span><span class="n">BTreeSet</span><span class="p">};</span>
+
+<span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">map</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BTreeMap</span><span class="p">::</span><span class="n">new</span><span class="p">();</span>
+<span class="n">map</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;three&quot;</span><span class="p">);</span>
+<span class="n">map</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;one&quot;</span><span class="p">);</span>
+<span class="n">map</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;two&quot;</span><span class="p">);</span>
+
+<span class="c1">// 按键顺序迭代</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">)</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="o">&amp;</span><span class="n">map</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{}: {}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">);</span><span class="w">  </span><span class="c1">// 1, 2, 3</span>
+<span class="p">}</span>
+
+<span class="c1">// 范围查询</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">)</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">map</span><span class="p">.</span><span class="n">range</span><span class="p">(</span><span class="mi">1</span><span class="o">..</span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 1..3 范围内的元素</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="syntax.html" class="btn btn-neutral float-left" title="7.1. 语法速查" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="iterators.html" class="btn btn-neutral float-right" title="7.3. 迭代器速查" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2024 ~ 2035, Walter Fan, Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

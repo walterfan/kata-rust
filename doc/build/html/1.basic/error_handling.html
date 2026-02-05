@@ -1,0 +1,511 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1.6. 错误处理 &mdash; Rust 实战开发指南 1.0 文档</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=46a845cc" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=f115507d"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../_static/togglebutton.js?v=1ae7504c"></script>
+      <script src="../_static/translations.js?v=beaddf03"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="next" title="1.7. C++ 程序员迁移指南" href="from_cpp.html" />
+    <link rel="prev" title="1.5. Trait 系统" href="traits.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Rust 实战开发指南
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">目录</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">1. 1. 基础与所有权</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="overview.html">1.1. Rust 语言概览</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ownership.html">1.2. 所有权系统</a></li>
+<li class="toctree-l2"><a class="reference internal" href="borrowing.html">1.3. 借用与引用</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lifetime.html">1.4. 生命周期</a></li>
+<li class="toctree-l2"><a class="reference internal" href="traits.html">1.5. Trait 系统</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">1.6. 错误处理</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#option">1.6.1. Option：处理可能为空的值</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#null">1.6.1.1. 替代 null</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">1.6.1.2. 常用方法</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#result">1.6.2. Result：处理可能失败的操作</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id3">1.6.2.1. 基本用法</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id4">1.6.2.2. ? 操作符</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id5">1.6.2.3. Result 常用方法</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#c">1.6.3. 与 C++ 异常的对比</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id6">1.6.3.1. C++ 异常问题</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rust-result">1.6.3.2. Rust Result 优势</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#java">1.6.4. 与 Java 异常的对比</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#java-checked-exception">1.6.4.1. Java Checked Exception 的问题</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rust">1.6.4.2. Rust 的一致性</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id7">1.6.5. 自定义错误类型</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id8">1.6.5.1. 简单错误</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#thiserror">1.6.5.2. 使用 thiserror（推荐）</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#anyhow">1.6.5.3. 使用 anyhow（应用程序）</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#panic">1.6.6. panic! 何时使用</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id9">1.6.7. 常见模式</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#option-result">1.6.7.1. 组合多个 Option/Result</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id10">1.6.7.2. 忽略错误（慎用）</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id11">1.6.8. 练习</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="from_cpp.html">1.7. C++ 程序员迁移指南</a></li>
+<li class="toctree-l2"><a class="reference internal" href="from_java.html">1.8. Java 程序员迁移指南</a></li>
+<li class="toctree-l2"><a class="reference internal" href="common_errors.html">1.9. 常见编译错误</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../2.concurrency/index.html">2. 2. 并发编程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../3.performance/index.html">3. 3. 性能调优</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../4.memory/index.html">4. 4. 内存管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../5.network/index.html">5. 5. 网络编程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../6.library/index.html">6. 6. 常用库</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../7.cheatsheet/index.html">7. 7. 速查表</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">8. 参考资料</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Rust 实战开发指南</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html"><span class="section-number">1. </span>1. 基础与所有权</a></li>
+      <li class="breadcrumb-item active"><span class="section-number">1.6. </span>错误处理</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/1.basic/error_handling.md.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="id1">
+<h1><span class="section-number">1.6. </span>错误处理<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
+<p>Rust 没有异常机制，而是使用 <code class="docutils literal notranslate"><span class="pre">Result</span></code> 和 <code class="docutils literal notranslate"><span class="pre">Option</span></code> 类型进行错误处理。
+这是与 C++/Java 最大的不同之一。</p>
+<section id="option">
+<h2><span class="section-number">1.6.1. </span>Option：处理可能为空的值<a class="headerlink" href="#option" title="Link to this heading"></a></h2>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">enum</span><span class="w"> </span><span class="nb">Option</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nb">Some</span><span class="p">(</span><span class="n">T</span><span class="p">),</span>
+<span class="w">    </span><span class="nb">None</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<section id="null">
+<h3><span class="section-number">1.6.1.1. </span>替代 null<a class="headerlink" href="#null" title="Link to this heading"></a></h3>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// Java 思维（不要这样做）：</span>
+<span class="c1">// String s = null;</span>
+<span class="c1">// if (s != null) { ... }</span>
+
+<span class="c1">// Rust 思维：</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">s</span><span class="p">:</span><span class="w"> </span><span class="nb">Option</span><span class="o">&lt;</span><span class="nb">String</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">None</span><span class="p">;</span>
+<span class="k">if</span><span class="w"> </span><span class="kd">let</span><span class="w"> </span><span class="nb">Some</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="id2">
+<h3><span class="section-number">1.6.1.2. </span>常用方法<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="kd">let</span><span class="w"> </span><span class="n">some_number</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Some</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">no_number</span><span class="p">:</span><span class="w"> </span><span class="nb">Option</span><span class="o">&lt;</span><span class="kt">i32</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">None</span><span class="p">;</span>
+
+<span class="c1">// unwrap：有值返回，None 则 panic</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">some_number</span><span class="p">.</span><span class="n">unwrap</span><span class="p">();</span><span class="w">  </span><span class="c1">// 5</span>
+<span class="c1">// let y = no_number.unwrap();  // panic!</span>
+
+<span class="c1">// unwrap_or：提供默认值</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">no_number</span><span class="p">.</span><span class="n">unwrap_or</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="w">  </span><span class="c1">// 0</span>
+
+<span class="c1">// unwrap_or_else：延迟计算默认值</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">no_number</span><span class="p">.</span><span class="n">unwrap_or_else</span><span class="p">(</span><span class="o">||</span><span class="w"> </span><span class="n">expensive_computation</span><span class="p">());</span>
+
+<span class="c1">// map：转换内部值</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">some_number</span><span class="p">.</span><span class="n">map</span><span class="p">(</span><span class="o">|</span><span class="n">n</span><span class="o">|</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span><span class="w">  </span><span class="c1">// Some(10)</span>
+
+<span class="c1">// and_then：链式操作</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">some_number</span>
+<span class="w">    </span><span class="p">.</span><span class="n">and_then</span><span class="p">(</span><span class="o">|</span><span class="n">n</span><span class="o">|</span><span class="w"> </span><span class="nb">Some</span><span class="p">(</span><span class="n">n</span><span class="p">.</span><span class="n">to_string</span><span class="p">()))</span><span class="w">  </span><span class="c1">// Some(&quot;5&quot;)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">and_then</span><span class="p">(</span><span class="o">|</span><span class="n">s</span><span class="o">|</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">parse</span><span class="p">::</span><span class="o">&lt;</span><span class="kt">i32</span><span class="o">&gt;</span><span class="p">().</span><span class="n">ok</span><span class="p">());</span><span class="w">  </span><span class="c1">// Some(5)</span>
+
+<span class="c1">// is_some / is_none</span>
+<span class="k">if</span><span class="w"> </span><span class="n">some_number</span><span class="p">.</span><span class="n">is_some</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;Has value&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="result">
+<h2><span class="section-number">1.6.2. </span>Result：处理可能失败的操作<a class="headerlink" href="#result" title="Link to this heading"></a></h2>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">enum</span><span class="w"> </span><span class="nb">Result</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">E</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nb">Ok</span><span class="p">(</span><span class="n">T</span><span class="p">),</span>
+<span class="w">    </span><span class="nb">Err</span><span class="p">(</span><span class="n">E</span><span class="p">),</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<section id="id3">
+<h3><span class="section-number">1.6.2.1. </span>基本用法<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">use</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">fs</span><span class="p">::</span><span class="n">File</span><span class="p">;</span>
+<span class="k">use</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">io</span><span class="p">::</span><span class="n">Read</span><span class="p">;</span>
+
+<span class="k">fn</span><span class="w"> </span><span class="nf">read_file</span><span class="p">(</span><span class="n">path</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="kt">str</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">Result</span><span class="o">&lt;</span><span class="nb">String</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">io</span><span class="p">::</span><span class="n">Error</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">File</span><span class="p">::</span><span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">?</span><span class="p">;</span><span class="w">  </span><span class="c1">// ? 操作符</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">contents</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">String</span><span class="p">::</span><span class="n">new</span><span class="p">();</span>
+<span class="w">    </span><span class="n">file</span><span class="p">.</span><span class="n">read_to_string</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="n">contents</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+<span class="w">    </span><span class="nb">Ok</span><span class="p">(</span><span class="n">contents</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="k">fn</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">match</span><span class="w"> </span><span class="n">read_file</span><span class="p">(</span><span class="s">&quot;hello.txt&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nb">Ok</span><span class="p">(</span><span class="n">contents</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">contents</span><span class="p">),</span>
+<span class="w">        </span><span class="nb">Err</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="fm">eprintln!</span><span class="p">(</span><span class="s">&quot;Error: {}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">e</span><span class="p">),</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="id4">
+<h3><span class="section-number">1.6.2.2. </span>? 操作符<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">?</span></code> 是错误传播的语法糖：</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// 使用 ?</span>
+<span class="k">fn</span><span class="w"> </span><span class="nf">read_file</span><span class="p">(</span><span class="n">path</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="kt">str</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">Result</span><span class="o">&lt;</span><span class="nb">String</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">io</span><span class="p">::</span><span class="n">Error</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">File</span><span class="p">::</span><span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">contents</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">String</span><span class="p">::</span><span class="n">new</span><span class="p">();</span>
+<span class="w">    </span><span class="n">file</span><span class="p">.</span><span class="n">read_to_string</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="n">contents</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+<span class="w">    </span><span class="nb">Ok</span><span class="p">(</span><span class="n">contents</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="c1">// 等同于</span>
+<span class="k">fn</span><span class="w"> </span><span class="nf">read_file</span><span class="p">(</span><span class="n">path</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="kt">str</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">Result</span><span class="o">&lt;</span><span class="nb">String</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">io</span><span class="p">::</span><span class="n">Error</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">match</span><span class="w"> </span><span class="n">File</span><span class="p">::</span><span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nb">Ok</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">f</span><span class="p">,</span>
+<span class="w">        </span><span class="nb">Err</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">Err</span><span class="p">(</span><span class="n">e</span><span class="p">),</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">    </span><span class="c1">// ...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="id5">
+<h3><span class="section-number">1.6.2.3. </span>Result 常用方法<a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="kd">let</span><span class="w"> </span><span class="n">ok</span><span class="p">:</span><span class="w"> </span><span class="nb">Result</span><span class="o">&lt;</span><span class="kt">i32</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="kt">str</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Ok</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">err</span><span class="p">:</span><span class="w"> </span><span class="nb">Result</span><span class="o">&lt;</span><span class="kt">i32</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="kt">str</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Err</span><span class="p">(</span><span class="s">&quot;error&quot;</span><span class="p">);</span>
+
+<span class="c1">// unwrap / expect</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ok</span><span class="p">.</span><span class="n">unwrap</span><span class="p">();</span><span class="w">         </span><span class="c1">// 5</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ok</span><span class="p">.</span><span class="n">expect</span><span class="p">(</span><span class="s">&quot;failed&quot;</span><span class="p">);</span><span class="w"> </span><span class="c1">// 5，panic 时显示 &quot;failed&quot;</span>
+
+<span class="c1">// unwrap_or / unwrap_or_else</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">err</span><span class="p">.</span><span class="n">unwrap_or</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="w">    </span><span class="c1">// 0</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">err</span><span class="p">.</span><span class="n">unwrap_or_else</span><span class="p">(</span><span class="o">|</span><span class="n">e</span><span class="o">|</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="fm">eprintln!</span><span class="p">(</span><span class="s">&quot;Error: {}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">e</span><span class="p">);</span>
+<span class="w">    </span><span class="mi">0</span>
+<span class="p">});</span>
+
+<span class="c1">// map / map_err</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ok</span><span class="p">.</span><span class="n">map</span><span class="p">(</span><span class="o">|</span><span class="n">n</span><span class="o">|</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span><span class="w">           </span><span class="c1">// Ok(10)</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">err</span><span class="p">.</span><span class="n">map_err</span><span class="p">(</span><span class="o">|</span><span class="n">e</span><span class="o">|</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">len</span><span class="p">());</span><span class="w">    </span><span class="c1">// Err(5)</span>
+
+<span class="c1">// and_then</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ok</span><span class="p">.</span><span class="n">and_then</span><span class="p">(</span><span class="o">|</span><span class="n">n</span><span class="o">|</span><span class="w"> </span><span class="nb">Ok</span><span class="p">(</span><span class="n">n</span><span class="p">.</span><span class="n">to_string</span><span class="p">()));</span><span class="w">  </span><span class="c1">// Ok(&quot;5&quot;)</span>
+
+<span class="c1">// ok / err：转换为 Option</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ok</span><span class="p">.</span><span class="n">ok</span><span class="p">();</span><span class="w">   </span><span class="c1">// Some(5)</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">err</span><span class="p">.</span><span class="n">err</span><span class="p">();</span><span class="w"> </span><span class="c1">// Some(&quot;error&quot;)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="c">
+<h2><span class="section-number">1.6.3. </span>与 C++ 异常的对比<a class="headerlink" href="#c" title="Link to this heading"></a></h2>
+<section id="id6">
+<h3><span class="section-number">1.6.3.1. </span>C++ 异常问题<a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="nf">process</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">openFile</span><span class="p">(</span><span class="s">&quot;data.txt&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="c1">// 如果这里抛异常，file 的析构函数会被调用吗？</span>
+<span class="w">        </span><span class="n">processFile</span><span class="p">(</span><span class="n">file</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">exception</span><span class="o">&amp;</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// 需要捕获哪些异常？文档通常不完整</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="rust-result">
+<h3><span class="section-number">1.6.3.2. </span>Rust Result 优势<a class="headerlink" href="#rust-result" title="Link to this heading"></a></h3>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span><span class="w"> </span><span class="nf">process</span><span class="p">()</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">Result</span><span class="o">&lt;</span><span class="p">(),</span><span class="w"> </span><span class="n">Error</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">open_file</span><span class="p">(</span><span class="s">&quot;data.txt&quot;</span><span class="p">)</span><span class="o">?</span><span class="p">;</span><span class="w">  </span><span class="c1">// 错误类型明确</span>
+<span class="w">    </span><span class="n">process_file</span><span class="p">(</span><span class="o">&amp;</span><span class="n">file</span><span class="p">)</span><span class="o">?</span><span class="p">;</span><span class="w">               </span><span class="c1">// 必须处理或传播</span>
+<span class="w">    </span><span class="nb">Ok</span><span class="p">(())</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>优势：</p>
+<ol class="arabic simple">
+<li><p><strong>显式错误类型</strong>：函数签名明确告诉你可能的错误</p></li>
+<li><p><strong>强制处理</strong>：不处理 Result 会有编译警告</p></li>
+<li><p><strong>零成本</strong>：没有异常表，没有 unwinding 开销</p></li>
+</ol>
+</section>
+</section>
+<section id="java">
+<h2><span class="section-number">1.6.4. </span>与 Java 异常的对比<a class="headerlink" href="#java" title="Link to this heading"></a></h2>
+<section id="java-checked-exception">
+<h3><span class="section-number">1.6.4.1. </span>Java Checked Exception 的问题<a class="headerlink" href="#java-checked-exception" title="Link to this heading"></a></h3>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="c1">// Java 强制处理 checked exception</span>
+<span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">process</span><span class="p">()</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">IOException</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 但 unchecked exception（如 NullPointerException）不强制处理</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="rust">
+<h3><span class="section-number">1.6.4.2. </span>Rust 的一致性<a class="headerlink" href="#rust" title="Link to this heading"></a></h3>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// 所有可能失败的操作都返回 Result</span>
+<span class="k">fn</span><span class="w"> </span><span class="nf">process</span><span class="p">()</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">Result</span><span class="o">&lt;</span><span class="p">(),</span><span class="w"> </span><span class="n">MyError</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 统一的错误处理模式</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id7">
+<h2><span class="section-number">1.6.5. </span>自定义错误类型<a class="headerlink" href="#id7" title="Link to this heading"></a></h2>
+<section id="id8">
+<h3><span class="section-number">1.6.5.1. </span>简单错误<a class="headerlink" href="#id8" title="Link to this heading"></a></h3>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="cp">#[derive(Debug)]</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">MyError</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">message</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="k">impl</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">fmt</span><span class="p">::</span><span class="n">Display</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">MyError</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">fn</span><span class="w"> </span><span class="nf">fmt</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">f</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">mut</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">fmt</span><span class="p">::</span><span class="n">Formatter</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nc">std</span><span class="p">::</span><span class="n">fmt</span><span class="p">::</span><span class="nb">Result</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="fm">write!</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">message</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">impl</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">error</span><span class="p">::</span><span class="n">Error</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">MyError</span><span class="w"> </span><span class="p">{}</span>
+</pre></div>
+</div>
+</section>
+<section id="thiserror">
+<h3><span class="section-number">1.6.5.2. </span>使用 thiserror（推荐）<a class="headerlink" href="#thiserror" title="Link to this heading"></a></h3>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">use</span><span class="w"> </span><span class="n">thiserror</span><span class="p">::</span><span class="n">Error</span><span class="p">;</span>
+
+<span class="cp">#[derive(Error, Debug)]</span>
+<span class="k">pub</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="nc">DataError</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cp">#[error(</span><span class="s">&quot;IO error: {0}&quot;</span><span class="cp">)]</span>
+<span class="w">    </span><span class="n">Io</span><span class="p">(</span><span class="cp">#[from]</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">io</span><span class="p">::</span><span class="n">Error</span><span class="p">),</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="cp">#[error(</span><span class="s">&quot;Parse error: {0}&quot;</span><span class="cp">)]</span>
+<span class="w">    </span><span class="n">Parse</span><span class="p">(</span><span class="cp">#[from]</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">num</span><span class="p">::</span><span class="n">ParseIntError</span><span class="p">),</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="cp">#[error(</span><span class="s">&quot;Invalid data: {0}&quot;</span><span class="cp">)]</span>
+<span class="w">    </span><span class="n">Invalid</span><span class="p">(</span><span class="nb">String</span><span class="p">),</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="anyhow">
+<h3><span class="section-number">1.6.5.3. </span>使用 anyhow（应用程序）<a class="headerlink" href="#anyhow" title="Link to this heading"></a></h3>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">use</span><span class="w"> </span><span class="n">anyhow</span><span class="p">::{</span><span class="n">Context</span><span class="p">,</span><span class="w"> </span><span class="nb">Result</span><span class="p">};</span>
+
+<span class="k">fn</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">Result</span><span class="o">&lt;</span><span class="p">()</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">fs</span><span class="p">::</span><span class="n">read_to_string</span><span class="p">(</span><span class="s">&quot;config.toml&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">context</span><span class="p">(</span><span class="s">&quot;Failed to read config file&quot;</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">port</span><span class="p">:</span><span class="w"> </span><span class="kt">u16</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">config</span><span class="p">.</span><span class="n">parse</span><span class="p">()</span>
+<span class="w">        </span><span class="p">.</span><span class="n">context</span><span class="p">(</span><span class="s">&quot;Failed to parse port number&quot;</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="nb">Ok</span><span class="p">(())</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="panic">
+<h2><span class="section-number">1.6.6. </span>panic! 何时使用<a class="headerlink" href="#panic" title="Link to this heading"></a></h2>
+<div class="admonition warning">
+<p class="admonition-title">警告</p>
+<p><code class="docutils literal notranslate"><span class="pre">panic!</span></code> 会终止程序（或线程），只在以下情况使用：</p>
+<ol class="arabic simple">
+<li><p><strong>不可恢复的错误</strong>：程序状态已损坏</p></li>
+<li><p><strong>编程错误</strong>：如数组越界（bug，不是预期错误）</p></li>
+<li><p><strong>测试和原型</strong>：快速失败，稍后处理</p></li>
+</ol>
+</div>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// 合理使用 panic</span>
+<span class="k">fn</span><span class="w"> </span><span class="nf">divide</span><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="w"> </span><span class="kt">i32</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">:</span><span class="w"> </span><span class="kt">i32</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="kt">i32</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="fm">panic!</span><span class="p">(</span><span class="s">&quot;Division by zero&quot;</span><span class="p">);</span><span class="w">  </span><span class="c1">// 编程错误</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">a</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">b</span>
+<span class="p">}</span>
+
+<span class="c1">// 更好的做法：返回 Result</span>
+<span class="k">fn</span><span class="w"> </span><span class="nf">divide_safe</span><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="w"> </span><span class="kt">i32</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">:</span><span class="w"> </span><span class="kt">i32</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">Result</span><span class="o">&lt;</span><span class="kt">i32</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;&#39;</span><span class="nb">static</span><span class="w"> </span><span class="kt">str</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nb">Err</span><span class="p">(</span><span class="s">&quot;Division by zero&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nb">Ok</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">b</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="id9">
+<h2><span class="section-number">1.6.7. </span>常见模式<a class="headerlink" href="#id9" title="Link to this heading"></a></h2>
+<section id="option-result">
+<h3><span class="section-number">1.6.7.1. </span>组合多个 Option/Result<a class="headerlink" href="#option-result" title="Link to this heading"></a></h3>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// 使用 ? 在 Option 上下文中</span>
+<span class="k">fn</span><span class="w"> </span><span class="nf">get_user_age</span><span class="p">(</span><span class="n">user_id</span><span class="p">:</span><span class="w"> </span><span class="kt">u32</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">Option</span><span class="o">&lt;</span><span class="kt">u32</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_user</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">profile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_profile</span><span class="p">(</span><span class="o">&amp;</span><span class="n">user</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+<span class="w">    </span><span class="n">profile</span><span class="p">.</span><span class="n">age</span>
+<span class="p">}</span>
+
+<span class="c1">// 使用 collect 收集 Result</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">results</span><span class="p">:</span><span class="w"> </span><span class="nb">Result</span><span class="o">&lt;</span><span class="nb">Vec</span><span class="o">&lt;</span><span class="kt">i32</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">_</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>
+<span class="w">    </span><span class="fm">vec!</span><span class="p">[</span><span class="s">&quot;1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;3&quot;</span><span class="p">]</span>
+<span class="w">        </span><span class="p">.</span><span class="n">iter</span><span class="p">()</span>
+<span class="w">        </span><span class="p">.</span><span class="n">map</span><span class="p">(</span><span class="o">|</span><span class="n">s</span><span class="o">|</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">parse</span><span class="p">::</span><span class="o">&lt;</span><span class="kt">i32</span><span class="o">&gt;</span><span class="p">())</span>
+<span class="w">        </span><span class="p">.</span><span class="n">collect</span><span class="p">();</span><span class="w">  </span><span class="c1">// 任一失败则整体失败</span>
+</pre></div>
+</div>
+</section>
+<section id="id10">
+<h3><span class="section-number">1.6.7.2. </span>忽略错误（慎用）<a class="headerlink" href="#id10" title="Link to this heading"></a></h3>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="c1">// 明确忽略错误</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">do_something</span><span class="p">();</span>
+
+<span class="c1">// 或使用 ok() 转换为 Option 然后忽略</span>
+<span class="n">do_something</span><span class="p">().</span><span class="n">ok</span><span class="p">();</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id11">
+<h2><span class="section-number">1.6.8. </span>练习<a class="headerlink" href="#id11" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>重写下面的 Java 风格代码为惯用 Rust：</p></li>
+</ol>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span><span class="w"> </span><span class="nf">get_value</span><span class="p">(</span><span class="n">map</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">HashMap</span><span class="o">&lt;</span><span class="nb">String</span><span class="p">,</span><span class="w"> </span><span class="nb">String</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">key</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="kt">str</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">String</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">map</span><span class="p">.</span><span class="n">contains_key</span><span class="p">(</span><span class="n">key</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">map</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">).</span><span class="n">unwrap</span><span class="p">().</span><span class="n">clone</span><span class="p">()</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nb">String</span><span class="p">::</span><span class="n">new</span><span class="p">()</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<details>
+<summary>答案</summary>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span><span class="w"> </span><span class="nf">get_value</span><span class="p">(</span><span class="n">map</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">HashMap</span><span class="o">&lt;</span><span class="nb">String</span><span class="p">,</span><span class="w"> </span><span class="nb">String</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">key</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="kt">str</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">String</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">map</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">).</span><span class="n">cloned</span><span class="p">().</span><span class="n">unwrap_or_default</span><span class="p">()</span>
+<span class="p">}</span>
+
+<span class="c1">// 或者返回 Option 让调用者决定</span>
+<span class="k">fn</span><span class="w"> </span><span class="nf">get_value</span><span class="p">(</span><span class="n">map</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">HashMap</span><span class="o">&lt;</span><span class="nb">String</span><span class="p">,</span><span class="w"> </span><span class="nb">String</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">key</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="kt">str</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">Option</span><span class="o">&lt;&amp;</span><span class="nb">String</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">map</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</details>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="traits.html" class="btn btn-neutral float-left" title="1.5. Trait 系统" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="from_cpp.html" class="btn btn-neutral float-right" title="1.7. C++ 程序员迁移指南" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2024 ~ 2035, Walter Fan, Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
